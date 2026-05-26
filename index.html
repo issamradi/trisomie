@@ -3,20 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Trisomie QCM</title>
+  <title>Trisomie QCM - Révison</title>
 
   <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
   <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-  
   <style>
     body {
       margin: 0;
       padding: 20px;
-      background: linear-gradient(135deg, #050505, #111827);
-      color: white;
-      font-family: Arial, sans-serif;
+      /* Dégradé coloré et apaisant */
+      background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+      background-attachment: fixed;
+      color: #1e293b; /* Texte foncé pour la lisibilité */
+      font-family: 'Inter', sans-serif;
       min-height: 100vh;
     }
 
@@ -25,37 +27,63 @@
     }
 
     button {
-      transition: all 0.2s ease;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-family: 'Inter', sans-serif;
     }
 
     button:hover {
-      transform: scale(1.03);
-      opacity: 0.95;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
-    .glass {
-      background: rgba(255,255,255,0.05);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 18px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+    .glass-container {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.5);
+      border-radius: 24px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-box {
+      background: #ffffff;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+      border-radius: 16px;
+      padding: 12px 16px;
+      border: 1px solid rgba(0,0,0,0.03);
+    }
+
+    .question-card {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+      transition: border 0.3s ease;
     }
 
     ::-webkit-scrollbar {
       width: 10px;
     }
 
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
     ::-webkit-scrollbar-thumb {
-      background: #333;
+      background: #cbd5e1;
       border-radius: 20px;
     }
 
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+
     ::selection {
-      background: #14b8a6;
-      color: white;
+      background: #8ec5fc;
+      color: #000;
     }
   </style>
-
 </head>
 
 <body>
@@ -64,437 +92,425 @@
   <script type="text/babel">
     const { useState } = React;
 
+    // Palette de couleurs modernisée et plus "pop"
     const TOPICS = [
-  {
-    id: "t21", label: "Trisomie 21", accent: "#0F6E56", light: "#E1F5EE", border: "#5DCAA5",
-    questions: [
-      { q: "La trisomie 21 est :", opts: ["A. Due à une carence en acide folique avant la conception", "B. Une anomalie chromosomique constitutionnelle déséquilibrée", "C. La plus fréquente des anomalies chromosomiques", "D. La première cause des retards mentaux", "E. Liée à l'âge des grands parents"], ans: ["B","C","D"] },
-      { q: "Les signes cliniques retrouvés dans la trisomie 21 néonatale sont :", opts: ["A. Une Hypertonie", "B. Une hyperlaxité ligamentaire", "C. Un livédo", "D. Un diastasis des muscles droits de l'abdomen", "E. Une hernie ombilicale"], ans: ["B","C","D","E"] },
-      { q: "Dans la trisomie 21, quelles sont les malformations et les complications à rechercher systématiquement en période néonatale ?", opts: ["A. Les malformations cardiaques", "B. Les malformations digestives", "C. La cataracte congénitale", "D. La surdité congénitale", "E. Le diabète"], ans: ["A","B","C","D"] },
-      { q: "Au premier trimestre de la grossesse, le calcul de risque d'une trisomie 21 tient compte de plusieurs éléments, lesquels ?", opts: ["A. Le triple test", "B. L'âge de la mère", "C. La mesure de la clarté nucale", "D. Le dosage de la fraction β libre HCG", "E. Le dosage de la PAPP-A"], ans: ["B","C","D","E"] },
-      { q: "Dans la trisomie 21, la ségrégation alterne selon le mode 2:1 d'une translocation (14:21) produit :", opts: ["A. 2 gamètes équilibrés", "B. Un gamète Normal et un gamète transloqué (dérivé)", "C. 4 gamètes déséquilibrés", "D. 4 gamètes déséquilibrés et 2 gamètes équilibrés", "E. 6 gamètes déséquilibrés"], ans: ["B"] },
-      { q: "(Cas clinique – 15 SA) Les signes cliniques qui peuvent être retrouvés dans la trisomie 21 prénatale sont :", opts: ["A. Un hygroma", "B. Une longueur du fémur inférieure à -1DS", "C. Une dolichocéphalie", "D. Une syndactylie des 2ème et 3ème orteils", "E. Une hernie ombilicale"], ans: ["A","B","D","E"] },
-      { q: "Les signes biologiques indiquant une trisomie 21 prénatale sont :", opts: ["A. Une augmentation de la fraction β libre de l'HCG", "B. Une diminution de l'alpha fœtoprotéine (AFP)", "C. Une augmentation de l'œstriol non conjugué (uE3)", "D. Une augmentation de la PAPP-A", "E. Une augmentation de la progestérone"], ans: ["A","B"] },
-      { q: "Le calcul de risque de survenue de la trisomie 21 tient compte de plusieurs éléments, lesquels ?", opts: ["A. L'âge de la mère", "B. Les malformations associées", "C. La mesure de la clarté nucale", "D. Le taux de la fraction β libre HCG", "E. Le taux de la progestérone"], ans: ["A","C","D"] },
-      { q: "Les complications qui peuvent être rencontrées dans la trisomie 21 sont :", opts: ["A. Les infections à répétitions", "B. La leucémie chronique", "C. L'hypothyroïdie", "D. L'épilepsie", "E. La surdité"], ans: ["A","C","D","E"] },
-      { q: "La surveillance annuelle d'un enfant de 6 ans atteint de trisomie 21 comporte :", opts: ["A. Une échographie cardiaque même en l'absence de symptomatologie", "B. La recherche systématique de la maladie cœliaque", "C. Un examen ORL", "D. Une radiographie de l'atlas et l'axis", "E. Le dosage de T4 et TSH"], ans: ["C","D","E"] },
-      { q: "Les signes dysmorphiques retrouvés dans la trisomie 21 sont :", opts: ["A. L'épicanthus", "B. L'hyperplasie des os propres du nez", "C. Le pli palmaire transversal unique", "D. La brachymésophalangie du 3ème doigt", "E. Les fentes palpébrales obliques en haut et en dehors"], ans: ["A","C","E"] },
-      { q: "Les marqueurs sériques utilisés dans le diagnostic prénatal de la trisomie 21 sont :", opts: ["A. La Fraction β libre de l'HCG", "B. La Protéine plasmatique placentaire de type A (PAPPA)", "C. L'alpha fœtoprotéine (AFP)", "D. L'œstriol non conjugué (uE3)", "E. La progestérone"], ans: ["A","B","C","D"] },
-      { q: "Le risque de récurrence de la trisomie 21 chez un couple avec un enfant ayant le caryotype 47,XX,+21 est de :", opts: ["A. 0%", "B. 1%", "C. 25%", "D. 15%", "E. 20%"], ans: ["B"] },
-      { q: "Le dépistage néonatal non invasif de la trisomie 21 par l'analyse de l'ADN fœtal est réalisé par :", opts: ["A. Amniocentèse", "B. Biopsie du trophoblaste", "C. Prise de sang chez la future mère", "D. Repérage échographique", "E. Prélèvement du sang du cordon"], ans: ["C"] },
-      { q: "Parmi les formules chromosomiques suivantes, quelles sont celles qui correspondent à une trisomie 21 ?", opts: ["A. 46,XY,der(21;22)+21", "B. 45,XY,der(21;22)", "C. 46,XX,t(15;21)+21", "D. 46,XX/47,XX,+21", "E. 47,XX,t(15;21)+21"], ans: ["A","C","D"] },
-      { q: "La surveillance annuelle d'un enfant de 3 ans atteint de trisomie 21 comporte :", opts: ["A. Une échographie cardiaque même en l'absence de symptomatologie", "B. La recherche de la maladie cœliaque même en l'absence de symptomatologie", "C. Une radiographie de l'atlas et l'axis", "D. Un examen ophtalmologique", "E. Le dosage de T4 et TSH"], ans: ["D","E"] },
-      { q: "Quelles sont les formules chromosomiques de la trisomie 21 dues à une translocation robertsonienne ?", opts: ["A. 46,XY,der(14;21),+21", "B. 45,XY,t(21;21)", "C. 47,XX,+21", "D. 46,XY,t(15;21),+21", "E. 46,XY,rob(15;21),+21"], ans: ["A","D","E"] },
-      { q: "Les complications rencontrées dans la trisomie 21 sont :", opts: ["A. Le diabète", "B. L'hyperthyroïdie", "C. La cataracte sénile", "D. La surdité", "E. Les syndromes myélodysplasiques"], ans: ["A","C","D"] },
-      { q: "Dans la trisomie 21, l'amniocentèse est proposée lorsque :", opts: ["A. Le triple test montre un risque ≥ 1/250", "B. Il y a des antécédents antérieurs d'anomalies chromosomiques dans la descendance", "C. L'un des parents est porteur d'anomalies chromosomiques équilibrées", "D. Il y a absence de signes échographiques au premier trimestre", "E. L'âge maternel est supérieur à 36 ans"], ans: ["A","B","C"] },
-      { q: "Le risque de récurrence d'une trisomie 21 par t(21;21) est de :", opts: ["A. 0%", "B. 25%", "C. 50%", "D. 75%", "E. 100%"], ans: ["E"] },
-      { q: "Dans la trisomie 21, le retard mental :", opts: ["A. Associe des difficultés de langage", "B. S'établit rapidement", "C. est de QI 50 à l'âge de cinq ans", "D. Décroît après l'âge de cinq ans", "E. S'associe à des troubles du comportement"], ans: ["A","B","C","D"] },
-      { q: "Au Maroc l'incidence de la trisomie 21 est distribuée en 2 pics, lesquels ?", opts: ["A. Un premier pic lié à l'âge maternel", "B. Un premier pic lié à une natalité élevée", "C. Un premier pic lié à l'âge paternel", "D. Un deuxième pic lié à l'âge maternel", "E. Un deuxième pic lié à une natalité élevée"], ans: ["A","E"] },
-      { q: "Toutes ces anomalies sont observées dans la trisomie 21 sauf une, laquelle ?", opts: ["A. Épicanthus", "B. Hyperplasie des os propres du nez", "C. Hypotonie", "D. Faciès plat", "E. Clinodactylie du 5ème doigt"], ans: ["B"] },
-      { q: "À propos de la trisomie 21, quelle est la formule chromosomique nécessitant la réalisation du caryotype constitutionnel des parents ?", opts: ["A. 47XY+21", "B. 47XY+21/46", "C. 46XX t(14;21)21", "D. 46XX+21", "E. 47XX+21/46"], ans: ["C"] },
-      { q: "Quel est le risque d'avoir un enfant atteint de trisomie 21 chez un parent ayant une translocation (21;21) équilibrée ?", opts: ["A. 50%", "B. 75%", "C. 25%", "D. 1%", "E. 100%"], ans: ["E"] },
-      { q: "Dans la trisomie 21, le diagnostic prénatal est indiqué devant :", opts: ["A. ATCD familiaux de trisomie 21", "B. Âge maternel inférieur à 38 ans", "C. Marqueurs sériques maternels > 1/250", "D. Présence d'hygroma", "E. Présence de malformation cardiaque"], ans: ["A","C","D","E"] },
-      { q: "Les complications rencontrées dans la trisomie 21 sont :", opts: ["A. Les infections", "B. L'absence du langage", "C. L'hypothyroïdie", "D. La cataracte", "E. La surdité"], ans: ["A","C","D","E"] },
-      { q: "À propos de la trisomie 21, quelles sont les 2 formules chromosomiques nécessitant la réalisation du caryotype constitutionnel des parents ?", opts: ["A. 47XY+21", "B. 46XY/47XY21", "C. 46XXt(14;21)21", "D. 46XXder(21;21)21", "E. 46XX/47XX21"], ans: ["C","D"] },
-      { q: "(Cas clinique – translocation 14:21 transmise par la mère) Quels sont les signes de dysmorphie faciale qui peuvent être observés ?", opts: ["A. L'épicanthus", "B. Les taches de Brushfield", "C. Le faciès allongé", "D. L'hypoplasie des os propres du nez", "E. L'hyportélorisme"], ans: ["A","B","D"] },
-      { q: "Cette famille désire d'autres enfants, quel est le risque d'avoir un autre enfant atteint de trisomie 21 (mère porteuse t(14;21)) ?", opts: ["A. 0%", "B. 1%", "C. 20%", "D. 25%", "E. 100%"], ans: ["C"] },
-      { q: "Quels sont les indications du diagnostic prénatal de la trisomie 21 ?", opts: ["A. La présence de translocation parentale", "B. L'âge maternel supérieur à 38 ans", "C. La présence d'anomalies échographiques", "D. Le taux de Marqueurs sériques maternels (triple test) inférieur à 1/250", "E. Le taux de Marqueurs sériques maternels (triple test) supérieur à 1/250"], ans: ["A","B","C","E"] },
-      { q: "(Cas clinique – translocation 21:21 transmise par le père) Toutes ces anomalies peuvent être observées dans la trisomie 21 sauf une, laquelle ?", opts: ["A. Épicanthus", "B. Taches de Brushfield", "C. Hyper laxité ligamentaire", "D. Hypertonie", "E. Clinodactylie du 5ème doigt"], ans: ["D"] },
-      { q: "Les examens complémentaires à demander sont :", opts: ["A. Une échographie cardiaque", "B. Une échographie abdominale", "C. Une NFS", "D. Une TDM cérébrale", "E. Un dosage de T4 TSH"], ans: ["A","B","C","E"] },
-      { q: "Quelle est la formule chromosomique du père du garçon trisomique 21 (translocation 21;21) ?", opts: ["A. 46XY", "B. 46XY†(21;21)", "C. 46XY†(21;21)", "D. 45XY+(21;21)", "E. 45XY(21;21)"], ans: ["D"] },
-      { q: "Quelle est la formule chromosomique du garçon trisomique 21 (translocation 21;21) ?", opts: ["A. 46,XY", "B. 46,XY,t(21;21)", "C. 46,XY,t(21;21)+21", "D. 45,XY,t(21;21)", "E. 45,XY,t(21;21),+21"], ans: ["C"] },
-      { q: "Cette famille désire avoir d'autres enfants, quel est le risque d'avoir un autre enfant atteint de trisomie 21 (père porteur t(21;21)) ?", opts: ["A. 0%", "B. 1%", "C. 25%", "D. 50%", "E. 100%"], ans: ["E"] },
-      { q: "Au Maroc la trisomie 21 :", opts: ["A. Est la plus fréquente des anomalies chromosomiques", "B. Est la première cause des retards mentaux", "C. Touche plus les filles que les garçons", "D. A une incidence qui varie avec l'âge de la mère", "E. A une incidence qui varie avec l'âge du père"], ans: ["A","B","D"] },
-      { q: "Les signes dysmorphiques retrouvés dans la trisomie 21 sont :", opts: ["A. Un pli palmaire unique", "B. Une clinodactylie du 5ème doigt", "C. Une nuque aplatie avec excès de peau", "D. Une microglossie", "E. Des tâches de Brushfield"], ans: ["A","B","C","E"] },
-      { q: "Les malformations viscérales qui peuvent être retrouvées dans la trisomie 21 sont :", opts: ["A. Un méningiome cérébral", "B. Une sténose duodénale", "C. Une persistance du canal artériel", "D. Une cataracte", "E. Une luxation congénitale de la hanche"], ans: ["B","C","D"] },
-      { q: "Les complications qui peuvent être rencontrées dans la trisomie 21 sont :", opts: ["A. La surdité", "B. Le diabète", "C. L'hypothyroïdie", "D. La leucémie aiguë", "E. L'occlusion intestinale"], ans: ["A","C","D"] },
-      { q: "Le caryotype d'une femme est : 45XX t(21;21). Quel est son risque d'avoir un enfant avec caryotype normal ?", opts: ["A. 0", "B. 1/3", "C. 1/6", "D. 1/2", "E. 1/100"], ans: ["A"] },
-      { q: "La mère âgée de 27 ans d'un trisomique 21 ayant un caryotype 47 XX+21. Le risque qu'elle a d'avoir un autre enfant trisomique 21 est de :", opts: ["A. 0", "B. 1/3", "C. 1/6", "D. 1/2", "E. 1%"], ans: ["E"] },
-      { q: "Les indications d'un diagnostic prénatal dans la trisomie 21 sont :", opts: ["A. Un couple ayant un enfant porteur d'une trisomie 21", "B. Âge maternel supérieur à 38 ans", "C. Marqueurs sériques maternels < 1/250", "D. Présence d'hygroma", "E. Aucune réponse n'est juste"], ans: ["A","B","D"] },
-      { q: "(Cas clinique nouveau-né) À l'examen clinique, les signes de dysmorphie faciale peuvent être présents SAUF un :", opts: ["A. Des fentes palpébrales obliques en haut et en dehors", "B. Une hyperplasie des os propres du nez", "C. Une Brachymésophalangie du 5ème doigt", "D. Une nuque aplatie avec excès de peau", "E. Un pli palmaire unique"], ans: ["B"] },
-      { q: "Quels sont les 2 signes d'examen clinique à rechercher en priorité ?", opts: ["A. Les tâches de Brushfield", "B. Le souffle cardiaque", "C. L'hyperlaxité ligamentaire", "D. L'hypotonie", "E. L'épicanthus"], ans: ["B","D"] },
-      { q: "Quels sont les examens complémentaires que vous allez demander ?", opts: ["A. Une TDM cérébrale", "B. Une échographie cardiaque", "C. Une échographie abdominale", "D. Le dosage de T3 TSH", "E. Une radiographie des os longs"], ans: ["B","C","D"] },
-      { q: "Après la réalisation des examens complémentaires, plusieurs malformations peuvent être retrouvées, lesquelles ?", opts: ["A. Un canal atrio-ventriculaire", "B. Une sténose duodénale", "C. Une cataracte congénitale", "D. Une surdité", "E. Une hypoplasie de la verge"], ans: ["A","B","C","D"] },
-      { q: "La formule 46XY+21 correspond à une forme de trisomie 21 :", opts: ["A. Libre et homogène", "B. En mosaïque", "C. Par duplication", "D. Par translocation robertsonienne", "E. Aucune réponse n'est juste"], ans: ["D"] },
-      { q: "Un caryotype des parents a montré chez le père la formule chromosomique : 45 XY (sans précision). Il est :", opts: ["A. Trisomique 21", "B. Trisomique 14", "C. Porteur sain", "D. Monosomique 14", "E. Monosomique 21"], ans: ["C"] },
-      { q: "Le risque dans cette famille d'avoir un autre enfant ayant une trisomie 21 est de :", opts: ["A. 0% (aucun risque)", "B. 1%", "C. 5%", "D. 50%", "E. 100%"], ans: ["C"] },
-      { q: "La fréquence de la trisomie 21 parmi les nouveau-nés est maintenant bien connue, elle est de :", opts: ["A. 1/8000", "B. 1/4000", "C. 1/2000", "D. 1/120", "E. 1/700"], ans: ["E"] },
-      { q: "Quels sont les signes cliniques de dysmorphie faciale retrouvés dans la trisomie 21 ?", opts: ["A. Épicanthus", "B. Hypoplasie des os propres du nez", "C. Brachymésophalangie du 5ème doigt", "D. Hypolaxité ligamentaire", "E. Hypotélorisme"], ans: ["A","B","C"] },
-      { q: "Quels sont les malformations viscérales rencontrées dans la trisomie 21 ?", opts: ["A. Rein en fer à cheval", "B. Atrésie pulmonaire", "C. Œil en cyclope", "D. Cataracte congénitale", "E. Canal atrio-ventriculaire"], ans: ["D","E"] },
-      { q: "Les complications pouvant engager le pronostic vital dans la trisomie 21 sont :", opts: ["A. La leucémie myéloïde chronique", "B. Les fractures spontanées", "C. Le diabète", "D. L'infarctus du myocarde", "E. L'épilepsie"], ans: ["D","E"] },
-      { q: "Dans la trisomie 21, la forme cytogénétique « libre et homogène » est retrouvée dans :", opts: ["A. 95% des cas", "B. 75% des cas", "C. 50% des cas", "D. 3% des cas", "E. 2% des cas"], ans: ["A"] },
-      { q: "Les mécanismes cytogénétiques expliquant la survenue de la trisomie 21 en mosaïque sont :", opts: ["A. Les accidents mitotiques post-zygotiques", "B. Les accidents méiotiques", "C. La réduction de trisomie 21 présente au stade zygotique", "D. L'anomalie de ségrégation des chromosomes par non-disjonction méiotique", "E. Les translocations réciproques"], ans: ["A","C"] },
-      { q: "Le caryotype d'une femme ayant un frère trisomique 21 est : 45XX t(14;21). Le risque qu'elle a d'avoir un enfant avec caryotype normal est de :", opts: ["A. 0", "B. 1/3", "C. 1/6", "D. 1/2", "E. 1/100"], ans: ["C"] },
-      { q: "Les indications d'un diagnostic prénatal dans la trisomie 21 sont :", opts: ["A. Un couple ayant un enfant porteur d'une trisomie 21", "B. L'âge maternel supérieur à 34 ans", "C. Les marqueurs sériques maternels < 1/250", "D. L'épaisseur de la nuque supérieure à 3 mm", "E. La présence d'hygroma"], ans: ["A","D","E"] },
-      { q: "Au Maroc la répartition de la trisomie 21 en fonction de l'âge maternel suit une courbe avec 2 pics liés à :", opts: ["A. La natalité maximum", "B. L'âge avancé", "C. Le niveau socio-économique", "D. L'état de vaccination", "E. L'origine ethnique"], ans: ["A","B"] },
-      { q: "(Cas clinique nouveau-né Al) Quels sont les signes de dysmorphie faciale ?", opts: ["A. Des fentes palpébrales obliques en bas et en dehors", "B. Une hyperplasie des os propres du nez", "C. Une Brachymésophalangie du 5ème doigt", "D. Une nuque aplatie avec excès de peau", "E. Un pli palmaire unique"], ans: ["C","D","E"] },
-      { q: "(Cas clinique nouveau-né Al) Quels sont les 2 signes d'examen clinique à rechercher en priorité ?", opts: ["A. Les tâches de Brushfield", "B. Le souffle cardiaque", "C. Le pli palmaire unique", "D. L'hypotonie", "E. L'hyper laxité ligamentaire"], ans: ["B","D"] },
-      { q: "(Cas clinique nouveau-né Al) Quels sont les examens complémentaires à demander ?", opts: ["A. Une échographie cardiaque", "B. Une échographie abdominale", "C. Dosage de T3 T4 TSH", "D. Une ponction lombaire", "E. Une TDM cérébrale"], ans: ["A","B","C"] },
-      { q: "Le mécanisme pouvant expliquer le phénotype de trisomie 21 avec duplication de la région 21q22 :", opts: ["A. La consanguinité", "B. L'âge maternel avancé", "C. Une prise médicamenteuse au cours de la grossesse", "D. L'effet de l'épigénétique", "E. L'effet de dosage génique"], ans: ["E"] },
-      { q: "Dans cette famille, quel est le risque d'avoir un autre enfant atteint de trisomie 21 (parents caryotype normal, enfant T21 par duplication) ?", opts: ["A. 0%", "B. 50%", "C. 1%", "D. 100%", "E. 25%"], ans: ["C"] },
-      { q: "À propos de la trisomie 21, quelles sont les 2 formules chromosomiques nécessitant la réalisation du caryotype constitutionnel des parents ?", opts: ["A. 47XY,+21", "B. 47XY,+21/46,XY", "C. 46XX t(14;21)+21", "D. 46XXi(21)(q10)", "E. 47XX,+21/46,XX"], ans: ["C","D"] },
-      { q: "Quel est le risque d'avoir un enfant atteint de trisomie 21 chez un parent ayant une translocation (21;21) équilibrée ?", opts: ["A. 1/6", "B. 1/3", "C. 1/2", "D. 1%", "E. 100%"], ans: ["E"] },
-      { q: "Dans la trisomie 21, le diagnostic prénatal est indiqué devant :", opts: ["A. Âge paternel supérieur à 60 ans", "B. Âge maternel supérieur à 38 ans", "C. Marqueurs sériques maternels > 1/250", "D. Présence d'une CIV", "E. Présence d'hygroma"], ans: ["B","C","D","E"] },
-      { q: "Au Maroc l'incidence de la trisomie 21 :", opts: ["A. Augmente avec l'âge paternel", "B. Est de 1/700", "C. Varie avec l'âge maternel", "D. Est distribuée en 2 pics", "E. Diminue avec l'apport en vitamines"], ans: ["B","C","D"] },
-      { q: "Toutes ces anomalies sont observées dans la trisomie 21 sauf une, laquelle ?", opts: ["A. Épicanthus", "B. Taches de Brushfield", "C. Hypertonie", "D. Hyper laxité ligamentaire", "E. Clinodactylie du 5ème doigt"], ans: ["C"] },
-      { q: "La sœur d'un trisomique 21 a un caryotype 45 XX t(14;21). Le risque qu'elle a d'avoir un enfant trisomique 21 est :", opts: ["A. 0", "B. 1/3", "C. 1/6", "D. 1/2", "E. 1%"], ans: ["C"] },
-      { q: "Le caryotype 48 XXY+21 correspond à un sujet :", opts: ["A. Masculin avec phénotype normal", "B. Masculin avec aspect androïde", "C. Féminin de grande taille avec hyperpilosité", "D. Masculin de grande taille avec hyperpilosité", "E. Masculin avec dysmorphie et retard mental"], ans: ["B"] },
-    ]
-  },
-  {
-    id: "t9", label: "Trisomie 8/9", accent: "#854F0B", light: "#FAEEDA", border: "#EF9F27",
-    questions: [
-      { q: "Dans la trisomie 8 en mosaïque :", opts: ["A. Les garçons sont plus atteints que les filles", "B. Les malformations osseuses sont rares", "C. La déficience intellectuelle est présente", "D. Le déficit intellectuel dépend du pourcentage de cellules trisomiques", "E. Le risque de récurrence est très faible"], ans: ["A","C","E"] },
-      { q: "Dans la trisomie 8, quelles sont les propositions justes ?", opts: ["A. Le conseil génétique est rassurant", "B. La dysmorphie faciale est caractéristique", "C. La déficience intellectuelle est proportionnelle au pourcentage des cellules trisomiques", "D. Le tableau clinique comporte des malformations de l'appareil squelettique et osseux", "E. La déficience intellectuelle est très profonde"], ans: ["A","D"] },
-      { q: "Dans la trisomie 8 :", opts: ["A. La dysmorphie faciale est caractéristique", "B. La déficience intellectuelle est proportionnelle au pourcentage des cellules trisomiques", "C. Le tableau clinique comporte des malformations de l'appareil squelettique et osseux", "D. Le conseil génétique est rassurant", "E. Aucune réponse n'est juste"], ans: ["C","D"] },
-      { q: "À propos de la trisomie 9, quelles sont les propositions justes ?", opts: ["A. Elle est viable lorsqu'elle est libre et homogène", "B. Elle est viable lorsqu'elle est en mosaïque", "C. Le tableau clinique comporte des anomalies de la face", "D. Le tableau clinique comporte des malformations de l'appareil squelettique et osseux", "E. Le signe clinique pathognomonique est la présence d'un œil en cyclope"], ans: ["B","C","D"] },
-      { q: "À propos de la trisomie 8, quelles sont les propositions justes ?", opts: ["A. Elle est viable lorsqu'elle est en mosaïque", "B. Le tableau clinique comporte des anomalies de la face", "C. Le tableau clinique comporte des malformations de l'appareil squelettique et osseux", "D. Le signe clinique pathognomonique est la présence d'un œil en cyclope", "E. Le poids à la naissance est habituellement normal"], ans: ["A","C","E"] },
-    ]
-  },
-  {
-    id: "t13", label: "Trisomie 13", accent: "#993C1D", light: "#FAECE7", border: "#F0997B",
-    questions: [
-      { q: "Les signes cliniques ci-dessous peuvent être présents dans la trisomie 13 SAUF un, lequel ?", opts: ["A. Une holoproencéphalie", "B. Un hypotélorisme", "C. Une dolichocéphalie", "D. Une fente labio-palatine", "E. Une hexadactylie"], ans: ["C"] },
-      { q: "L'âge maternel élevé est un facteur de risque des maladies chromosomiques suivantes :", opts: ["A. La trisomie 9 en mosaïque", "B. La trisomie X", "C. La trisomie 13", "D. La trisomie 18", "E. Le syndrome de Turner"], ans: ["A","B","C","D"] },
-      { q: "Les signes cliniques retrouvés dans la trisomie 13 sont :", opts: ["A. Un épicanthus", "B. Des fentes palpébrales anti-mongoloïdes", "C. Une fente labio-palatine", "D. Une anophtalmie", "E. Un hypertélorisme"], ans: ["C","D"] },
-      { q: "Les signes cliniques ci-dessous peuvent être présents dans la trisomie 13 SAUF un, lequel ?", opts: ["A. Une holoproencéphalie", "B. Un hypotélorisme", "C. Une dolichocéphalie", "D. Une fente labio-palatine", "E. Une hexadactylie"], ans: ["C"] },
-      { q: "(Cas clinique – biopsie villosités choriales) Ce dépistage prénatal :", opts: ["A. Est réalisé sans consentement écrit", "B. Est réalisé entre 10 et 12 semaines d'aménorrhée", "C. Est réalisé uniquement par voie trans-cervicale", "D. Doit être réalisé sur 2 prélèvements indépendants", "E. Permet de faire un examen cytogénétique direct rapide"], ans: ["B"] },
-      { q: "Toutes ces anomalies sont rencontrées dans la trisomie 13 SAUF une, laquelle ?", opts: ["A. L'holoproencéphalie", "B. L'hypertélorisme", "C. La fente labio-palatine", "D. L'hydronéphrose", "E. L'hexadactylie"], ans: ["B"] },
-      { q: "Toutes ces anomalies sont observées dans la trisomie 13 SAUF une, laquelle ?", opts: ["A. Hypotélorisme", "B. Fente labio-palatine", "C. Hexadactylie", "D. Hypertonie", "E. Omphalocèle"], ans: ["D"] },
-      { q: "Dans la trisomie 13 :", opts: ["A. Le risque augmente avec l'âge maternel", "B. Les malformations viscérales entraînent le décès durant les trois premiers mois de vie", "C. L'holoproencéphalie est présente", "D. Le risque de récurrence est faible", "E. Le diagnostic prénatal est impossible"], ans: ["A","B","C"] },
-      { q: "Dans la trisomie 13, quelle est la formule chromosomique nécessitant la réalisation du caryotype constitutionnel des parents ?", opts: ["A. 47,XY,+13", "B. 47,XY,+13/46,XY", "C. 47,XX,+13", "D. 46,XX,i(13)q(10)", "E. 47,XX,+13/46,XX"], ans: ["D"] },
-      { q: "Les signes cliniques retrouvés dans la trisomie 13 sont :", opts: ["A. Des pieds bots", "B. Une hexadactylie", "C. Un œil en cyclope", "D. Un hypertélorisme", "E. Une fente labio-palatine"], ans: ["B","C","E"] },
-      { q: "Dans la trisomie 13 :", opts: ["A. Le risque de l'avoir augmente avec l'âge maternel", "B. 80% des fœtus atteints de trisomie 13 décèdent in utero", "C. Le risque de récurrence est faible", "D. La prise en charge médicale est limitée aux soins de support et de confort", "E. Le traitement chirurgical des malformations modifie le pronostic"], ans: ["A","B","D"] },
-      { q: "À propos de la trisomie 13, quelles sont les propositions FAUSSES ?", opts: ["A. Le risque de récurrence est très augmenté", "B. Le tableau clinique comporte un syndrome malformatif léger", "C. La survie moyenne est au-delà de 2 ans", "D. Le risque augmente avec l'âge maternel", "E. Le risque augmente avec l'âge paternel"], ans: ["B","C","E"] },
-      { q: "À propos de la trisomie 13, quelles sont les propositions justes ?", opts: ["A. Le caryotype des parents doit être réalisé quel que soit la formule chromosomique de l'enfant", "B. Le tableau clinique inclut un syndrome dysmorphique et malformatif grave", "C. 90% des fœtus atteints de trisomie 13 décèdent in utero", "D. Son risque augmente avec l'âge maternel", "E. Son risque de récurrence est faible"], ans: ["B","C","D"] },
-      { q: "Dans la trisomie 13 :", opts: ["A. La majorité des fœtus décèdent in utéro", "B. Le risque de survenue dépend de l'âge maternel", "C. La dysmorphie se caractérise par la griffe digitale", "D. La dysmorphie se caractérise par le pied en piolet", "E. Aucune réponse n'est juste"], ans: ["A","B"] },
-      { q: "La trisomie 13 :", opts: ["A. Est une maladie rapidement mortelle avant 3 mois", "B. Peut être secondaire à une non-ségrégation chromosomique", "C. Associe un hypotélorisme et un œil en cyclope", "D. A un risque de survenue indépendant de l'âge maternel", "E. Se caractérise par la griffe digitale"], ans: ["A","B","C"] },
-      { q: "La trisomie 13 est une maladie :", opts: ["A. Dont le risque d'apparition augmente avec l'âge paternel", "B. Dont le risque d'apparition augmente avec l'âge maternel", "C. Connue aussi sous le nom du syndrome de Down", "D. Connue aussi sous le nom du syndrome de Patau", "E. Connue aussi sous le nom du syndrome d'Edward"], ans: ["B","D"] },
-      { q: "Les malformations viscérales rencontrées dans la trisomie 13 sont :", opts: ["A. L'holoproencéphalie", "B. La fente labio-palatine", "C. La griffe digitale", "D. Les pieds en piolet", "E. L'hexadactylie"], ans: ["A","B","E"] },
-      { q: "Les signes cliniques de la trisomie 13 sont :", opts: ["A. La griffe digitale", "B. La fente labio-palatine", "C. L'œil en cyclope", "D. L'hexadactylie", "E. Les pieds en piolet"], ans: ["B","C","D"] },
-      { q: "À propos de la trisomie 13, quelles sont les propositions justes ?", opts: ["A. Le risque de récurrence est de 1% chez des parents ayant déjà un enfant trisomique 13", "B. Son risque de récurrence est très augmenté", "C. Le tableau clinique comporte un syndrome malformatif léger", "D. 90% des enfants atteints de trisomie 13 décèdent vers l'âge de 6 mois", "E. Son risque augmente avec l'âge maternel"], ans: ["A","E"] },
-      { q: "À propos de la trisomie 13, quelles sont les propositions justes ?", opts: ["A. Le caryotype des parents doit être réalisé quel que soit la formule chromosomique de l'enfant trisomique 13", "B. Le tableau clinique inclut un syndrome dysmorphique et malformatif grave", "C. 90% des fœtus atteints de trisomie 13 décèdent in utero", "D. Son risque augmente avec l'âge maternel", "E. Son risque de récurrence est très augmenté"], ans: ["B","C","D"] },
-    ]
-  },
-  {
-    id: "t18", label: "Trisomie 18", accent: "#534AB7", light: "#EEEDFE", border: "#AFA9EC",
-    questions: [
-      { q: "La trisomie 18 en mosaïque :", opts: ["A. Peut résulter d'une réduction d'une trisomie 18 présente au stade zygotique", "B. Peut résulter d'un accident mitotique post-zygotique tardif", "C. Peut résulter d'une anomalie de ségrégation des chromosomes par non-disjonction méiotique", "D. Est d'évolution toujours mortelle", "E. Est responsable d'une stérilité chez les garçons"], ans: ["A","B"] },
-      { q: "Dans la trisomie 18 libre et homogène :", opts: ["A. Le risque de récurrence est de 1%", "B. La dolichocéphalie nécessite un traitement chirurgical", "C. La non-ségrégation des chromosomes 18 est liée à l'âge maternel", "D. La griffe digitale est fréquente", "E. Les fentes labiales et palatines sont rares"], ans: ["A","C","D"] },
-      { q: "Dans la trisomie 18 :", opts: ["A. La majorité des enfants décèdent avant 1 an", "B. Le bassin est étroit", "C. Le cou est court", "D. Les malformations cardiaques sont rares", "E. La prise en charge médicale est limitée aux soins de support et de confort"], ans: ["A","B","C","E"] },
-      { q: "La trisomie 18 de novo peut résulter :", opts: ["A. D'une non-disjonction mitotique", "B. D'une non-disjonction de la division méiotique réductionnelle", "C. D'un accident de la fécondation", "D. D'une non-disjonction de la division méiotique équationnelle", "E. D'un parent porteur d'une anomalie de structure équilibrée"], ans: ["B","D"] },
-      { q: "(Cas clinique – femme 30 ans, 14 SA) Quelles anomalies morphologiques peuvent être retrouvées à l'échographie ?", opts: ["A. Un retard de croissance intra-utérin", "B. Un nez petit et pointu", "C. Un prognathisme", "D. Une fente labiale et palatine", "E. Des pieds varus équin"], ans: ["A","B","D","E"] },
-      { q: "Les anomalies des mains retrouvées dans la trisomie 18 sont :", opts: ["A. Les poings fermés", "B. Le chevauchement du 2ème doigt sur le 3ème doigt", "C. Le chevauchement du 5ème doigt sur le 4ème doigt", "D. La clinodactylie du 5ème doigt", "E. La clinodactylie du 2ème doigt"], ans: ["A","B","C"] },
-      { q: "Les signes de dysmorphie peuvent être présents dans la trisomie 18 SAUF un, lequel ?", opts: ["A. Une micrognatie", "B. Un bassin large", "C. Des oreilles faunesques", "D. Une fente labiale", "E. Une griffe digitale"], ans: ["B"] },
-      { q: "Dans la trisomie 18 :", opts: ["A. Les filles sont plus touchées que les garçons", "B. 90% des enfants décèdent avant 1 an", "C. La prise en charge médicale est limitée aux soins de support et de confort", "D. Le traitement chirurgical des malformations modifie le pronostic", "E. La forme en mosaïque est la plus fréquente"], ans: ["A","B","C"] },
-      { q: "À propos de la trisomie 18, quelles sont les propositions justes ?", opts: ["A. Le tableau clinique inclut un syndrome dysmorphique et un syndrome malformatif", "B. La survie moyenne est au-delà de 10 ans", "C. Dans 80% des cas la trisomie 18 est libre et homogène", "D. Le signe clinique pathognomonique est la présence d'un nez en casque de guerrier grec", "E. La présence de griffe digitale"], ans: ["A","C","E"] },
-      { q: "À propos de la trisomie 18, quelles sont les propositions justes ?", opts: ["A. Les malformations viscérales sont rares", "B. Le tableau clinique inclut une dolichocéphalie et un cou court", "C. La moyenne de survie est supérieure à 10 ans", "D. Dans 80% des cas la trisomie 18 est libre et homogène", "E. Le signe clinique pathognomonique est la présence de la griffe digitale"], ans: ["B","D","E"] },
-      { q: "Les signes de dysmorphie peuvent être présents dans la trisomie 18 SAUF un, lequel ?", opts: ["A. Une dolichocéphalie", "B. Une micrognatie", "C. Des oreilles faunesques", "D. Une nuque aplatie avec excès de peau", "E. Une griffe digitale"], ans: ["D"] },
-      { q: "(Cas clinique – dolichocéphalie, fente labiale bilatérale, griffe digitale) Quel est le diagnostic le plus probable ?", opts: ["A. Le syndrome de Down", "B. Le syndrome de Patau", "C. Le syndrome de Wolf-Hirschhorn", "D. Le syndrome de cri du chat", "E. Le syndrome d'Edwards"], ans: ["E"] },
-      { q: "Quelle pourrait être la formule chromosomique de ce fœtus (syndrome d'Edwards) ?", opts: ["A. 46XX+18", "B. 47XX+18", "C. 46XX+13", "D. 47XX+13", "E. 47 XXX"], ans: ["B"] },
-      { q: "Une interruption thérapeutique de grossesse a été refusée. Après la naissance, quelle est l'espérance de vie de ce fœtus ?", opts: ["A. Supérieure à 5 ans", "B. Supérieure à 10 ans", "C. Supérieure à 20 ans", "D. Supérieure à 6 mois", "E. Inférieure à 6 mois"], ans: ["E"] },
-      { q: "(Cas clinique – nourrisson sexe féminin, trisomie 18) Quels sont les signes de dysmorphie faciale ?", opts: ["A. La dolichocéphalie", "B. Une micrognatie", "C. Une Brachymésophalangie du 5ème doigt", "D. Une nuque aplatie avec excès de peau", "E. Un pli palmaire unique"], ans: ["A","B","E"] },
-      { q: "Quels sont les anomalies de membres caractéristiques de la trisomie 18 ?", opts: ["A. L'attitude du suppliant", "B. Les poings fermés", "C. La griffe digitale", "D. Les pieds en piolet", "E. L'hyper laxité ligamentaire"], ans: ["A","B","C","D"] },
-      { q: "Quelle est la formule chromosomique la plus fréquente dans la trisomie 18 ?", opts: ["A. 46XX/47XX+18", "B. 46XXt(14;18)", "C. 46XXt(18;21)", "D. 47XY+18", "E. 47XX+18"], ans: ["E"] },
-      { q: "L'évolution de ce nouveau-né (trisomie 18) sera :", opts: ["A. Mortelle avant 6 mois", "B. Mortelle après 12 mois", "C. L'amélioration de la dysmorphie", "D. L'apparition d'une déficience mentale à 3 ans", "E. L'apparition des troubles du comportement alimentaire à 2 ans"], ans: ["A"] },
-      { q: "(Cas clinique – nourrisson Mouna, 2 mois, dolichocéphalie, oreilles faunesques, griffe digitale) Quel est votre diagnostic ?", opts: ["A. Le syndrome de Down", "B. Le syndrome d'Edwards", "C. Le syndrome de Patau", "D. Le syndrome de Wolf-Hirschhorn", "E. Le syndrome de cri du chat"], ans: ["B"] },
-      { q: "Quelle pourrait être la formule chromosomique de ce nourrisson (Mouna) ?", opts: ["A. 46XX+18", "B. 46XX+13", "C. 47XX+13", "D. 47XX+18", "E. 47 XXX"], ans: ["D"] },
-      { q: "L'espérance de vie de ce nourrisson (Mouna) est :", opts: ["A. Supérieure à 5 ans", "B. Supérieure à 10 ans", "C. Supérieure à 20 ans", "D. Inférieure à 3 mois", "E. Inférieure à 6 mois"], ans: ["E"] },
-      { q: "À propos de la trisomie 18, quelles sont les propositions justes ?", opts: ["A. Le caryotype des parents doit être réalisé quel que soit la formule chromosomique de l'enfant trisomique 18", "B. Le tableau clinique inclut un syndrome dysmorphique et un syndrome malformatif", "C. La trisomie 18 est caractérisée par une moyenne de survie au-delà de 10 ans", "D. Dans 80% des cas la trisomie 18 est libre et homogène", "E. Le signe clinique pathognomonique est la présence d'un nez en casque de guerrier grec"], ans: ["B","D"] },
-      { q: "(Cas clinique – RCIU, fente labiale et palatine, griffe digitale) Quel diagnostic suspectez-vous ?", opts: ["A. Trisomie 13", "B. Trisomie 18", "C. Trisomie 21", "D. Le syndrome de Wolf-Hirschhorn", "E. Le syndrome de cri de chat"], ans: ["B"] },
-    ]
-  },
-  {
-    id: "klinefelter", label: "Klinefelter", accent: "#1A6FA8", light: "#E1F0FB", border: "#5BA8D4",
-    questions: [
-      { q: "Dans le syndrome de Klinefelter :", opts: ["A. Le caryotype sur lignée lymphocytaire prédit la constitution chromosomique testiculaire.", "B. Le traitement substitutif par les androgènes avant la puberté améliore la fertilité.", "C. La fécondité spontanée est impossible.", "D. Le développement de la verge est normal.", "E. La gynécomastie est constante."], ans: ["C","D"] },
-      { q: "Dans le syndrome de Klinefelter :", opts: ["A. Le développement mental est normal.", "B. La stérilité est fréquente.", "C. La fécondité spontanée est possible.", "D. La fonction sexuelle est normale.", "E. Le spermogramme est normal."], ans: ["A","B","D"] },
-      { q: "(Cas clinique – homme 28 ans, infertilité) Les signes cliniques orientant vers le syndrome de Klinefelter sont :", opts: ["A. Une musculature peu développée,", "B. Une pilosité pubienne triangulaire,", "C. Une pilosité axillaire développée,", "D. Un aspect longiligne,", "E. Un développement normal de la verge."], ans: ["A","B","D","E"] },
-      { q: "Les diagnostics différentiels du syndrome de Klinefelter sont :", opts: ["A. Une tumeur hypophysaire,", "B. L'insuffisance gonadique périphérique,", "C. Le syndrome XYY,", "D. Le male XX,", "E. Le syndrome de Kallman de Morsier."], ans: ["A","B","D","E"] },
-      { q: "Dans le syndrome de Klinefelter :", opts: ["A. Le développement mental est anormal.", "B. Le développement de la verge est normal.", "C. L'aspect est gynoïde.", "D. La fécondité spontanée est impossible.", "E. Le caryotype sur lignée lymphocytaire prédit l'état de la spermatogenèse."], ans: ["B","C","D"] },
-      { q: "Dans le syndrome de Klinefelter, quelles sont les propositions justes ?", opts: ["A. La stérilité est fréquente.", "B. La fécondité spontanée est possible.", "C. La fonction sexuelle est normale.", "D. L'aspect morphologique est gynoïde.", "E. Le développement mental est normal."], ans: ["A","C","D","E"] },
-      { q: "Dans le syndrome de Klinefelter :", opts: ["A. La formule chromosomique classique est 47,XYY.", "B. La gynécomastie est bilatérale et indolore.", "C. Les testicules sont fermes et indolores.", "D. La fécondité spontanée est possible.", "E. Le retard mental est sévère."], ans: ["B","C"] },
-      { q: "Les anomalies génitales rencontrées dans le syndrome de Klinefelter sont :", opts: ["A. Une pilosité pubienne losangique.", "B. Une cryptorchidie.", "C. Une hypoplasie de la verge.", "D. Un hypospadias.", "E. Un scrotum de petite taille."], ans: ["B","C","D","E"] },
-      { q: "Dans le syndrome de Klinefelter, le caryotype sur lignée lymphocytaire permet de :", opts: ["A. Confirmer le diagnostic.", "B. Eliminer les anomalies des autosomes.", "C. Prédire la constitution chromosomique testiculaire.", "D. Prédire la présence de spermatogenèse.", "E. Améliorer la prise en charge."], ans: ["A","B","E"] },
-      { q: "Le syndrome de Klinefelter se caractérise par :", opts: ["A. Une musculature peu développée.", "B. Un aspect gynoïde.", "C. Une fécondité spontanée.", "D. Une morphologie longiligne.", "E. Un développement mental normal."], ans: ["A","B","D","E"] },
-      { q: "A propos du syndrome de Klinefelter, quelles sont les propositions FAUSSES ?", opts: ["A. L'X supplémentaire est d'origine maternelle dans 50% des cas.", "B. La formule chromosomique classique est 47 XYY.", "C. La gynécomastie fait partie du tableau clinique.", "D. Il inclut un retard mental sévère.", "E. La descendance d'un patient atteint du syndrome de Klinefelter est saine."], ans: ["B","D"] },
-      { q: "Le syndrome de Klinefelter se caractérise par :", opts: ["A. Une stérilité.", "B. Une fécondité spontanée.", "C. Une fonction sexuelle normale.", "D. Une morphologie longiligne.", "E. Un développement mental normal."], ans: ["A","C","D","E"] },
-      { q: "Le syndrome de Klinefelter se définit par la présence de plusieurs :", opts: ["A. Chromosomes Y supplémentaires chez des sujets de phénotype masculin.", "B. Chromosomes X supplémentaires chez des sujets de phénotype féminin.", "C. Chromosomes X supplémentaires chez des sujets de phénotype masculin.", "D. Chromosomes Y supplémentaires chez des sujets de phénotype féminin.", "E. Chromosomes Y supplémentaires chez des sujets avec ambiguïté sexuelle."], ans: ["C"] },
-      { q: "Dans le syndrome de Klinefelter :", opts: ["A. La fréquence de son apparition augmente avec l'âge maternel.", "B. La fréquence de son apparition augmente avec l'âge paternel.", "C. La stérilité est constante.", "D. La fécondité est normale.", "E. La fonction sexuelle est normale."], ans: ["A","C","E"] },
-      { q: "Le tableau clinique du syndrome de Klinefelter comporte :", opts: ["A. Un retard mental.", "B. Une pilosité axillaire bien développée.", "C. Une morphologie longiligne avec aspect gynoïde.", "D. Une musculature bien développée.", "E. Des petits testicules fermes et indolores."], ans: ["C","E"] },
-      { q: "Le male XX :", opts: ["A. Est un garçon avec caryotype 46,XX.", "B. Est une fille avec caryotype 46,XX.", "C. Est une fille avec caryotype 46,XY.", "D. A un phénotype de Klinefelter.", "E. A un phénotype de Turner."], ans: ["A","D"] },
-      { q: "Le diagnostic du syndrome du male XX nécessite :", opts: ["A. L'étude du gène SRY.", "B. L'étude du gène SRX.", "C. L'étude du gène FMR1.", "D. L'étude du gène FANCA.", "E. Aucune réponse n'est juste."], ans: ["A"] },
-      { q: "(Cas clinique – garçon 17 ans, cryptorchidie avec hypospadias) Quels sont les autres signes cliniques à rechercher ?", opts: ["A. Une musculature peu développée.", "B. Une gynécomastie.", "C. Une pilosité axillaire bien développée.", "D. Un aspect androïde.", "E. Des petits testicules fermes et indolores."], ans: ["A","B","E"] },
-      { q: "Quels sont les examens complémentaires à réaliser ?", opts: ["A. Une échographie testiculaire.", "B. Dosage de la LH et de la FSH dans le sang.", "C. Dosage de la LH et de la FSH dans les urines.", "D. Dosage de la testostérone.", "E. Un caryotype."], ans: ["A","B","D","E"] },
-      { q: "La prise en charge thérapeutique de ce patient sera :", opts: ["A. L'abstention.", "B. Un traitement hormonal par la testostérone.", "C. Un traitement hormonal par les oestro-progestatifs.", "D. Un traitement hormonal par l'hormone de croissance.", "E. Un don de sperme."], ans: ["B"] },
-      { q: "Le Male XX :", opts: ["A. Est un garçon avec caryotype 46,XX.", "B. Est une fille avec caryotype 46,XX.", "C. A un phénotype du syndrome de Klinefelter.", "D. A un phénotype du syndrome de Turner.", "E. Est dû à une translocation du gène SRY."], ans: ["A","C","E"] },
-      { q: "A propos du syndrome de Klinefelter, quelles sont les propositions justes ?", opts: ["A. L'X supplémentaire est d'origine maternelle dans 50% des cas.", "B. La formule chromosomique classique est 47,XYY.", "C. La gynécomastie fait partie du tableau clinique.", "D. La grande variation phénotypique.", "E. Sa fréquence augmente avec l'âge paternel."], ans: ["A","C"] },
-      { q: "Toutes ces anomalies sont observées dans le syndrome de Klinefelter pré-pubertaire SAUF une, laquelle ?", opts: ["A. La cryptorchidie.", "B. L'hypoplasie de la verge.", "C. L'hypospadias.", "D. L'hyperplasie de la verge.", "E. Le retard staturo-pondéral."], ans: ["D"] },
-      { q: "Le syndrome du male XX correspond à un sujet :", opts: ["A. Masculin avec caryotype 46,XX.", "B. Masculin avec caryotype 47,XXY.", "C. Féminin avec caryotype 47,XXY.", "D. Féminin avec caryotype 47,XXX.", "E. Masculin de grande taille avec hyperpilosité."], ans: ["A"] },
-      { q: "Le syndrome de Klinefelter se définit par la présence de plusieurs :", opts: ["A. Chromosomes X supplémentaires chez des sujets de phénotype masculin.", "B. Chromosomes Y supplémentaires chez des sujets de phénotype masculin.", "C. Chromosomes X supplémentaires chez des sujets de phénotype féminin.", "D. Chromosomes Y supplémentaires chez des sujets de phénotype féminin.", "E. Chromosomes Y supplémentaires chez des sujets avec ambiguïté sexuelle."], ans: ["A"] },
-      { q: "Le tableau clinique du syndrome de Klinefelter comporte :", opts: ["A. Un retard mental.", "B. Une pilosité axillaire bien développée.", "C. Une morphologie longiligne avec aspect gynoïde.", "D. Une musculature peu développée.", "E. Des petits testicules fermes et indolores."], ans: ["C","D","E"] },
-      { q: "Le caryotype 48,XXY correspond à un sujet :", opts: ["A. Masculin avec phénotype normal.", "B. Masculin avec aspect androïde.", "C. Féminin de grande taille avec hyperpilosité.", "D. Masculin de grande taille avec hyperpilosité.", "E. Masculin avec aspect gynoïde."], ans: ["E"] },
-      { q: "A propos du syndrome de Klinefelter, quelles sont les propositions justes ?", opts: ["A. L'X supplémentaire est d'origine maternelle dans 50% des cas.", "B. La formule chromosomique classique est 47,XYY.", "C. La gynécomastie fait partie du tableau clinique.", "D. Il inclut un retard mental sévère.", "E. La descendance d'un patient atteint du syndrome de Klinefelter est saine."], ans: ["A","C"] },
-    ]
-  },
-  {
-    id: "williams", label: "Williams-Beuren", accent: "#B45309", light: "#FEF3C7", border: "#F59E0B",
-    questions: [
-      { q: "Dans le syndrome de Williams :", opts: ["A. Le comportement amical est caractéristique.", "B. L'hypercalcémie néonatale idiopathique disparaît spontanément après 2 ans.", "C. L'agressivité envers l'entourage est fréquente.", "D. La lèvre inférieure est large et éversée.", "E. Le langage est absent."], ans: ["A","B","D"] },
-      { q: "La dysmorphie faciale du syndrome de Williams et Beuren peut regrouper :", opts: ["A. Une hypoplasie malaire,", "B. Des traits grossiers,", "C. Des joues pleines,", "D. Une microstomie,", "E. Un épicanthus."], ans: ["A","C","E"] },
-      { q: "Le syndrome de Williams et Beuren associe :", opts: ["A. Une déficience intellectuelle profonde.", "B. Une perte du tissu sous-cutané.", "C. Un comportement amical.", "D. Un hypogénitalisme.", "E. Une épilepsie."], ans: ["C"] },
-      { q: "Quels sont les examens paracliniques à demander dans le syndrome de Williams et Beuren ?", opts: ["A. Echographie cardiaque.", "B. Echographie rénale.", "C. Cathétérisme cardiaque.", "D. Dosage de la glycémie.", "E. Dosage de la calcémie."], ans: ["A","B","E"] },
-      { q: "Les troubles comportementaux du syndrome de Williams regroupent :", opts: ["A. Une grande anxiété.", "B. Une hyperphagie.", "C. Une facilité de communication.", "D. Une difficulté d'adaptation sociale.", "E. Un déficit des compétences visio-spatiales."], ans: ["A","C","E"] },
-      { q: "La dysmorphie faciale du syndrome de Williams et Beuren regroupe :", opts: ["A. Une hypoplasie malaire.", "B. Un œdème périorbitaire.", "C. Un épicanthus.", "D. Des joues pleines.", "E. Une microstomie."], ans: ["A","B","C","D"] },
-      { q: "Quel syndrome microdélétionnel est associé à une bonne mémoire auditive ?", opts: ["A. Le syndrome d'Angelman.", "B. Le syndrome de Prader-Willi.", "C. Le syndrome de l'X fragile.", "D. L'Anémie de Fanconi.", "E. Le syndrome de Williams."], ans: ["E"] },
-      { q: "(Cas clinique – fille 2 ans et demi) A l'anamnèse, la maman rapporte quelques signes cliniques depuis la naissance, lesquels ?", opts: ["A. Une hypotonie.", "B. Une mauvaise prise pondérale.", "C. Des pleurs fréquents.", "D. Des troubles du sommeil.", "E. Une hernie inguinale."], ans: ["B","C","D","E"] },
-      { q: "Quels sont les signes de dysmorphie faciale qui peuvent être retrouvés ?", opts: ["A. Une microstomie.", "B. Un épicanthus.", "C. Un iris stellaire.", "D. Une lèvre inférieure large et éversée.", "E. Une hypoplasie malaire."], ans: ["B","C","D","E"] },
-      { q: "Cette fille présente aussi des troubles du comportement, lesquels ?", opts: ["A. Une hypersensibilité aux bruits.", "B. Une hyperphagie.", "C. Des crises brutales de colère.", "D. Des sourires fréquents.", "E. Une grande anxiété."], ans: ["A","D","E"] },
-      { q: "Des examens complémentaires doivent être demandés, lesquels ?", opts: ["A. Un cathétérisme cardiaque.", "B. Une échographie cardiaque.", "C. Une échographie rénale.", "D. Une échographie vasculaire.", "E. Un dosage des hormones thyroïdiennes."], ans: ["B","C","D","E"] },
-      { q: "Le bilan paraclinique n'a montré aucune anomalie. Pour confirmer votre diagnostic, vous devez réaliser :", opts: ["A. Un caryotype standard.", "B. Une FISH de la région 15q11.23.", "C. Etude du transcrit SNRPN.", "D. Une étude moléculaire.", "E. Une FISH de la région 7q11.23."], ans: ["E"] },
-      { q: "La surveillance et le suivi de cet enfant doit comporter :", opts: ["A. La réalisation d'un cathétérisme cardiaque.", "B. Une prise régulière de sa pression artérielle.", "C. Un régime pauvre en calcium.", "D. La réalisation d'échographie cardiaque.", "E. Des soins buccodentaires."], ans: ["B","C","D","E"] },
-      { q: "Le syndrome de Williams et Beuren se manifeste en période post-natale par :", opts: ["A. Une néphrocalcinose.", "B. Une hypercalcémie idiopathique.", "C. Une sténose aortique supravalvulaire.", "D. Une hyperglycémie.", "E. Un œdème des membres inférieurs."], ans: ["A","B","C"] },
-      { q: "Dans le syndrome de Williams et Beuren, des examens complémentaires doivent être demandés, lesquels ?", opts: ["A. Une échographie cardiaque.", "B. Un cathétérisme cardiaque.", "C. Une échographie rénale.", "D. Une échographie vasculaire.", "E. Un dosage des hormones thyroïdiennes."], ans: ["A","C","D","E"] },
-      { q: "(Cas clinique – enfant féminin 7 ans) Quels sont les signes cliniques qui peuvent être retrouvés ?", opts: ["A. L'hypoplasie malaire.", "B. Un oedème périorbitaire.", "C. Une lèvre inférieure éversée.", "D. Des oreilles faunesques.", "E. Une nuque aplatie avec excès de peau."], ans: ["A","B","C"] },
-      { q: "Les examens complémentaires à réaliser chez cet enfant sont :", opts: ["A. Echographie cardiaque.", "B. Echographie rénale.", "C. Cathétérisme cardiaque.", "D. Dosage de la glycémie.", "E. Bilan thyroïdien."], ans: ["A","B","E"] },
-      { q: "La maman rapporte des troubles du comportement relatifs à ce syndrome, lesquels ?", opts: ["A. La facilité à établir des contacts.", "B. L'anxiété.", "C. Le déficit des compétences visio-spatiales.", "D. La polyphagie.", "E. Les mouvements répétitifs."], ans: ["A","B","C"] },
-      { q: "L'anomalie chromosomique responsable de ce syndrome est :", opts: ["A. Microdélétion 7q.", "B. Microduplication 7q.", "C. Microdélétion 15q.", "D. 47XX+7.", "E. 45XX-7."], ans: ["A"] },
-      { q: "Le syndrome de Williams et Beuren peut se manifester en période néonatale par :", opts: ["A. Des problèmes d'alimentation.", "B. Une hypercalcémie idiopathique.", "C. Une hypotonie.", "D. Une hyperglycémie.", "E. Un œdème des membres inférieurs."], ans: ["A","B"] },
-      { q: "(Cas clinique – fille 8 ans) Quels sont les signes dysmorphiques qui peuvent être retrouvés ?", opts: ["A. Une lèvre supérieure en chapeau de gendarme.", "B. Un hypertélorisme.", "C. Une hypoplasie malaire.", "D. Un œdème périorbitaire.", "E. Lèvre inférieure large et éversée."], ans: ["C","D","E"] },
-      { q: "Cette fille présente aussi des troubles du comportement, lesquels ?", opts: ["A. Une hyperphagie.", "B. Des crises brutales de colère.", "C. Des sourires fréquents.", "D. Une grande anxiété.", "E. Une bonne mémoire auditive."], ans: ["C","D","E"] },
-      { q: "Des examens complémentaires doivent être demandés, lesquels ?", opts: ["A. Un cathétérisme cardiaque.", "B. Une échographie cardiaque.", "C. Une échographie rénale.", "D. Une échographie vasculaire.", "E. Un dosage des hormones thyroïdiennes."], ans: ["B","C","D","E"] },
-      { q: "La dysmorphie faciale retrouvée dans le syndrome de Williams et Beuren post-natal :", opts: ["A. Œdème périorbitaire.", "B. Hyperplasie malaire.", "C. Iris stellaire.", "D. Microstomie.", "E. Lèvre inférieure large et éversée."], ans: ["A","C","E"] },
-      { q: "Les examens complémentaires ci-dessous peuvent être réalisés dans le syndrome de Williams et Beuren SAUF un, lequel ?", opts: ["A. L'échographie cardiaque.", "B. Le cathétérisme cardiaque.", "C. L'échographie vasculaire.", "D. L'échographie rénale.", "E. Dosage des hormones thyroïdiennes."], ans: ["B"] },
-      { q: "(Cas clinique – nourrisson Amina, 3 mois) A cette étape, le diagnostic le plus probable est :", opts: ["A. Le syndrome de Prader-Willi.", "B. La trisomie 21.", "C. La trisomie 18.", "D. Le syndrome de Turner.", "E. Le syndrome de Williams et Beuren."], ans: ["E"] },
-      { q: "Pour confirmer le diagnostic, il faut réaliser :", opts: ["A. Un caryotype standard.", "B. Une échographie abdominale.", "C. Une numération formule sanguine (NFS).", "D. Une TDM cérébrale.", "E. Un électroencéphalogramme (EEG)."], ans: ["A","B"] },
-      { q: "Le bilan paraclinique n'a montré aucune anomalie. Pour confirmer votre diagnostic, vous devez réaliser :", opts: ["A. Une fibroscopie digestive haute.", "B. Une rectoscopie.", "C. Etude du gène FANCA.", "D. Une FISH.", "E. Un ionogramme."], ans: ["D"] },
-      { q: "La surveillance et le suivi du nourrisson Amina doit comporter :", opts: ["A. La réalisation d'un cathétérisme cardiaque.", "B. Une prise régulière de sa pression artérielle.", "C. Un régime pauvre en calcium.", "D. La réalisation d'échographie cardiaque.", "E. Des soins buccodentaires."], ans: ["B","C","D","E"] },
-      { q: "Les signes cliniques retrouvés dans le syndrome de Williams et Beuren dans la période post-natale sont :", opts: ["A. Vomissements répétitifs.", "B. Hypoplasie malaire.", "C. Hypocalcémie.", "D. Sténose aortique supravalvulaire.", "E. Grande anxiété."], ans: ["A","B","D","E"] },
-      { q: "Les signes cliniques retrouvés dans le syndrome de Williams et Beuren dans la période néonatale sont :", opts: ["A. Vomissements répétitifs.", "B. Diarrhée.", "C. Troubles du sommeil.", "D. Hypotonie.", "E. Hypercalcémie idiopathique."], ans: ["A","C","E"] },
-      { q: "Les examens complémentaires à réaliser lors du syndrome de Williams et Beuren :", opts: ["A. Echographie cardiaque.", "B. Echographie rénale.", "C. Cathétérisme cardiaque.", "D. Dosage de la glycémie.", "E. Dosage de T3-T4-TSH."], ans: ["A","B","E"] },
-    ]
-  },
-  {
-    id: "prader", label: "Prader-Willi", accent: "#0F766E", light: "#CCFBF1", border: "#14B8A6",
-    questions: [
-      { q: "Dans le syndrome de Prader-Willi :", opts: ["A. Les crises de colère sont brutales et incontrôlables.", "B. L'hypogonadisme est fréquent.", "C. L'hypotonie néonatale est absente.", "D. Le retard psychomoteur est absent.", "E. Le retard statural est fréquent."], ans: ["A","B","E"] },
-      { q: "Les troubles psychologiques et comportementaux du syndrome de Prader-Willi sont :", opts: ["A. Les crises brutales de colère.", "B. Le déficit des compétences visio-spatiales.", "C. Le manque de réserve vis à vis des étrangers.", "D. Les violences physiques contre l'entourage.", "E. L'hyperphagie."], ans: ["A","D","E"] },
-      { q: "Chez le nourrisson, le syndrome de Prader-Willi peut se manifester par :", opts: ["A. Un déficit de la succion-déglutition.", "B. Un trouble du sommeil.", "C. Une hypotonie.", "D. Une cryptorchidie.", "E. Une constipation."], ans: ["A","C","D"] },
-      { q: "Le syndrome de Prader-Willi peut être dû à :", opts: ["A. Une microdélétion du chromosome 15.", "B. Une microdélétion du chromosome 7.", "C. Une disomie uniparentale maternelle.", "D. Une disomie uniparentale paternelle.", "E. Un défaut de la méthylation du centre de l'empreinte."], ans: ["A","C","E"] },
-      { q: "Dans le syndrome de Prader-Willi, la microdélétion est :", opts: ["A. Décelable par un caryotype standard.", "B. Décelable par la technique cytogénétique moléculaire (FISH).", "C. De taille inférieure à de SMb.", "D. Due à un crossing over inégal.", "E. Responsable de 70% des cas de ce syndrome."], ans: ["B","C","D","E"] },
-      { q: "La confirmation diagnostique du syndrome de Prader-Willi nécessite la réalisation de :", opts: ["A. Caryotype standard.", "B. Caryotype avec utilisation d'agents pontants.", "C. Etude moléculaire du transcrit SNRPN.", "D. FISH.", "E. Etude moléculaire du gène FMR1."], ans: ["C","D"] },
-      { q: "Le syndrome de Prader-Willi peut être dû à :", opts: ["A. Une microdélétion de la copie maternelle.", "B. Une disomie uniparentale paternelle.", "C. Une disomie uniparentale maternelle.", "D. Un défaut de la méthylation.", "E. Une mutation du gène UBE3A."], ans: ["C","D"] },
-      { q: "(Cas clinique – garçon 8 ans, déficience intellectuelle, obésité, yeux en amandes, front étroit, bouche en chapeau de gendarme) Quel est le diagnostic le plus probable ?", opts: ["A. Le syndrome d'Angelman.", "B. Le syndrome de Prader-Willi.", "C. Le syndrome de Williams.", "D. Le syndrome de l'X fragile.", "E. Le syndrome de Down."], ans: ["B"] },
-      { q: "Quels autres signes cliniques peuvent faire partie de ce syndrome ?", opts: ["A. Une cryptorchidie.", "B. Une petite verge.", "C. Une microcéphalie.", "D. Une hypertonie des membres.", "E. Des petites extrémités."], ans: ["A","B","E"] },
-      { q: "Pour confirmer ce diagnostic, quel examen paraclinique doit-on réaliser ?", opts: ["A. Un caryotype standard.", "B. Un caryotype avec utilisation d'agents pontants.", "C. Une étude moléculaire du transcrit SNRPN.", "D. Une FISH.", "E. Une étude moléculaire du gène FMRI."], ans: ["C"] },
-      { q: "Ce syndrome peut être dû à :", opts: ["A. Une microdélétion.", "B. Une disomie uniparentale maternelle.", "C. Une disomie uniparentale paternelle.", "D. Un défaut de la méthylation.", "E. Une translocation robertsonienne."], ans: ["A","B","D"] },
-      { q: "Le syndrome de Prader-Willi peut se manifester par :", opts: ["A. Un micropénis.", "B. Une microcéphalie.", "C. Une obésité.", "D. Une hyperphagie.", "E. Une épilepsie."], ans: ["A","C","D"] },
-      { q: "(Cas clinique – garçon 6 ans, fratrie de 3, mariage consanguin) Quel est le diagnostic le plus probable ?", opts: ["A. Syndrome de Turner.", "B. Trisomie 21.", "C. Syndrome de l'X fragile.", "D. Syndrome de Prader-Willi.", "E. Anémie de Fanconi."], ans: ["D"] },
-      { q: "Ce syndrome est associé à des troubles du comportement, lesquels ?", opts: ["A. Les crises de colère.", "B. L'anxiété.", "C. Le déficit des compétences visio-spatiales.", "D. La polyphagie.", "E. Les mouvements répétitifs."], ans: ["A","D"] },
-      { q: "Pour confirmer votre diagnostic, vous allez prescrire :", opts: ["A. Une étude du transcrit SNRPN.", "B. Une FISH.", "C. Un caryotype standard.", "D. Une étude du gène FMRI.", "E. Une étude du gène UBE3A."], ans: ["A"] },
-      { q: "La prise en charge de cet enfant comprendra :", opts: ["A. Une hormonothérapie substitutive.", "B. Une diététique contre l'obésité.", "C. L'abstention.", "D. Un traitement anti-épileptique.", "E. Un régime pauvre en protéines."], ans: ["A","B"] },
-      { q: "Dans le syndrome de Prader-Willi, quelles sont les propositions FAUSSES ?", opts: ["A. Il peut être dû à une mutation dans le gène UBE3A.", "B. Les gènes manquants sont d'origine paternelle.", "C. Les gènes manquants sont d'origine maternelle.", "D. Il peut être dû à une mutation du centre de l'empreinte.", "E. Il peut être dû à une microdélétion."], ans: ["A","C"] },
-      { q: "Dans le syndrome de Prader-Willi, quelles sont les propositions JUSTES ?", opts: ["A. Les gènes manquants sont d'origine paternelle.", "B. Les gènes manquants sont d'origine maternelle.", "C. Peut être dû à une mutation du centre de l'empreinte.", "D. Peut être dû à une mutation dans le gène UBE3A.", "E. Peut être dû à une microdélétion."], ans: ["A","C"] },
-      { q: "Le phénotype comportemental du syndrome de Prader-Willi chez un enfant de 8 ans comporte :", opts: ["A. Des crises de pleurs facilement provoqués.", "B. Une absence du langage.", "C. Des sourires fréquents.", "D. Une déficience mentale.", "E. Une hyperphagie."], ans: ["A","D","E"] },
-      { q: "Les anomalies génétiques responsables du syndrome de Prader-Willi sont :", opts: ["A. Une disomie uniparentale maternelle.", "B. Une disomie uniparentale paternelle.", "C. Une mutation du centre de l'empreinte.", "D. Une microdélétion du gène SNRPN paternel.", "E. Une microdélétion du gène SNRPN maternel."], ans: ["A","C","D"] },
-      { q: "Dans le syndrome de Prader-Willi, quelles sont les propositions justes ?", opts: ["A. Les gènes manquants sont d'origine paternelle.", "B. Les gènes manquants sont d'origine maternelle.", "C. Peut être dû à une mutation du centre de l'empreinte.", "D. Peut être dû à une mutation dans le gène UBEJA.", "E. Peut être dû à une microdélétion."], ans: ["A","C","E"] },
-      { q: "Quels sont les mécanismes génétiques impliqués dans la survenue du syndrome de Prader-Willi ?", opts: ["A. Une disomie uniparentale maternelle dans 25% des cas.", "B. Une mutation du centre de l'empreinte dans 5% des cas.", "C. Mutation dans le gène UBE3A dans 20% des cas.", "D. Une microdélétion du gène SNRPN paternel dans 70% des cas.", "E. Une disomie uniparentale paternelle dans 25% des cas."], ans: ["A","B"] },
-    ]
-  },
-  {
-    id: "turner", label: "Turner", accent: "#9D174D", light: "#FCE7F3", border: "#F9A8D4",
-    questions: [
-      { q: "Dans le syndrome de Turner, les examens para-cliniques à demander chez une fillette de 8 ans sont :", opts: ["A. Une échographie rénale.", "B. Le dosage de la LH et de la FSH dans le sang.", "C. Le dosage de la LH et de la FSH dans les urines.", "D. Le dosage de l'oestradiol.", "E. La recherche du gène SRY."], ans: ["A","B","E"] },
-      { q: "(Cas clinique – fille 15 ans, retard pubertaire) A l'examen clinique, les signes de dysmorphie faciale ci-dessous peuvent être présents SAUF un, lequel ?", opts: ["A. Une nuque aplatie avec excès de peau.", "B. Une bouche en chapeau de gendarme.", "C. Un épicanthus.", "D. Un ptosis.", "E. Un microrétrognathisme."], ans: ["B"] },
-      { q: "Les malformations qui peuvent être retrouvées sont :", opts: ["A. Un cubitus valgus,", "B. Une coarctation de l'aorte.", "C. Une hyperplasie de l'utérus.", "D. Un rein en fer à cheval.", "E. Une brachymétacarpie du 4ème et 5ème doigts."], ans: ["A","B","D","E"] },
-      { q: "Les examens complémentaires à réaliser dans le syndrome de Turner chez une fillette de 7 ans sont :", opts: ["A. Dosage de la LH et FSH.", "B. Radios de squelette.", "C. Dosage de l'oestradiol.", "D. Echographie rénale.", "E. Echographie cardiaque."], ans: ["B","D","E"] },
-      { q: "Au Maroc, la prise en charge du syndrome de Turner est basée sur :", opts: ["A. Le traitement par l'hormone de croissance.", "B. Le don d'ovocytes.", "C. Le traitement oestro-progestatif.", "D. L'ablation systématique des gonades.", "E. La plastie des organes génitaux externes."], ans: ["A","C"] },
-      { q: "Quels sont les formules chromosomiques rencontrées dans le syndrome de Turner ?", opts: ["A. 46,X,i(Xq).", "B. 45,X/46,XX/47,XXX.", "C. 45,X/46,XY/47,XXY.", "D. 46,X,del(Xp).", "E. 47,XYY."], ans: ["A","B","C","D"] },
-      { q: "Dans le syndrome de Turner sa mosaïque :", opts: ["A. La puberté est normale.", "B. La fertilité est possible.", "C. Le pronostic est mauvais.", "D. La ménopause précoce est fréquente.", "E. Le risque de gonadoblastome est élevé."], ans: ["A","B","D"] },
-      { q: "A propos du syndrome de Turner, quelle est la formule chromosomique associée à un retard mental ?", opts: ["A. 46,X,del(Xp).", "B. 46,X,del(Xq).", "C. 46,X,r(X).", "D. 45,X/46,XY.", "E. 46,X,i(Xq)."], ans: ["C"] },
-      { q: "Dans le syndrome de Turner, quelle est la formule chromosomique nécessitant une gonadectomie ?", opts: ["A. 46,X,del(Xp).", "B. 46,X,del(Xq).", "C. 45,X/46,XX/47,XXX.", "D. 45,X/46,XY.", "E. 46,X,i(Xq)."], ans: ["D"] },
-      { q: "Le syndrome de Turner est :", opts: ["A. La seule monosomie complète viable.", "B. Influencé par l'âge maternel.", "C. Dû à la perte d'un chromosome X.", "D. Caractérisé par une aménorrhée primaire.", "E. Caractérisé par des malformations rénales."], ans: ["A","C","D","E"] },
-      { q: "Quels sont les examens paracliniques à demander chez une fillette de 7 ans ayant le syndrome de Turner ?", opts: ["A. Une radiologie du squelette.", "B. Une échographie rénale.", "C. Une échographie cardiaque.", "D. Un examen ophtalmologique.", "E. Le dosage de la LH et de la FSH."], ans: ["A","B","C","D"] },
-      { q: "Dans le syndrome de Turner, quelles sont les formules chromosomiques nécessitant une gonadectomie ?", opts: ["A. 45X/46XY.", "B. 46Xdel(Xp).", "C. 46Xdel(Xq).", "D. 45X/46XX/47XXX.", "E. 46Xi(Xq)."], ans: ["A"] },
-      { q: "A propos du syndrome de Turner, quelle est la proposition FAUSSE ?", opts: ["A. C'est la seule monosomie complète viable.", "B. Il n'y a pas d'influence de l'âge maternel ou paternel.", "C. La fertilité est normale.", "D. Le phénotype est féminin associé à un retard pubertaire.", "E. La formule chromosomique la plus fréquente est 45X."], ans: ["C"] },
-      { q: "Dans le syndrome de Turner, la triade diagnostique regroupe :", opts: ["A. Une petite taille.", "B. Une déficience intellectuelle.", "C. Un ptérigium coli.", "D. Une hyperphagie.", "E. Une aménorrhée primaire."], ans: ["A","C","E"] },
-      { q: "Dans le syndrome de Turner, quelle est la formule chromosomique qui correspond à une mosaïque ?", opts: ["A. 46,X,del(Xp).", "B. 46,X,r(X).", "C. 45,X.", "D. 46,X,i(Xq).", "E. 45X/46XY."], ans: ["E"] },
-      { q: "L'inactivation du chromosome X s'accomplit :", opts: ["A. A un stade précoce de l'embryogenèse.", "B. A la naissance.", "C. Au hasard.", "D. Sur les allèles d'un seul chromosome X.", "E. Sur les chromosomes X d'origine maternelle."], ans: ["A","C"] },
-      { q: "Dans le syndrome de Turner avec un chromosome X en anneau :", opts: ["A. La fertilité est préservée.", "B. Le retard mental est constant.", "C. Le retard statural est constant.", "D. Les malformations squelettiques sont absentes.", "E. Le risque de gonadoblastome est élevé."], ans: ["B"] },
-      { q: "Dans le syndrome de Turner, quelle est la formule chromosomique qui s'accompagne d'un retard mental ?", opts: ["A. 46,X,del(Xp).", "B. 46,X,r(X).", "C. 45X/46XX/47XXX.", "D. 46,X,i(Xq).", "E. 45X/46XY."], ans: ["B"] },
-      { q: "(Cas clinique – patiente 40 ans, enceinte 24 SA, hygroma fœtal + RCIU) Quels sont les diagnostics à évoquer ?", opts: ["A. La trisomie 21.", "B. La trisomie 18.", "C. Le syndrome de Prader-Willi.", "D. Le syndrome de Klinefelter.", "E. Le syndrome de Turner."], ans: ["B","E"] },
-      { q: "Pour confirmer le diagnostic RAPIDEMENT, quel examen allez-vous demander ?", opts: ["A. Un caryotype suivi d'une FISH.", "B. Une FISH suivie d'un caryotype.", "C. Un caryotype avec agent pontant.", "D. Uniquement un caryotype.", "E. L'abstention de tout examen."], ans: ["B"] },
-      { q: "A ce stade, quel est le diagnostic le plus probable (bébé féminin, replis cutanés au cou) ?", opts: ["A. Trisomie 21.", "B. Trisomie 18.", "C. Syndrome de Prader-Willi.", "D. Syndrome de Klinefelter.", "E. Syndrome de Turner."], ans: ["E"] },
-      { q: "Quel autre examen clinique manque à votre consultation à la maternité ?", opts: ["A. Examen cardiovasculaire.", "B. Examen des aires ganglionnaires.", "C. Examen cutané.", "D. Examen ORL.", "E. Examen ophtalmologique."], ans: ["A"] },
-      { q: "Un caryotype a montré la formule : 45X/46XY. A long terme, quel est le risque pour ce nouveau-né ?", opts: ["A. Le retard mental.", "B. Le développement d'un gonadoblastome.", "C. Le développement d'une leucémie.", "D. Les fausses couches à répétitions.", "E. Aucun risque."], ans: ["B"] },
-      { q: "Dans le syndrome de Turner, quelle est la formule chromosomique nécessitant une gonadectomie ?", opts: ["A. 46Xdel(Xp).", "B. 46Xr(X).", "C. 45X/46XX/47XXX.", "D. 46Xj(Xq).", "E. 45X/46XY."], ans: ["E"] },
-      { q: "Quels sont les signes cliniques retrouvés dans le syndrome de Turner néonatal ?", opts: ["A. Le lymphoedème.", "B. La petite taille.", "C. L'aménorrhée.", "D. L'hypotrophie.", "E. Le pterygium colli."], ans: ["A","B","E"] },
-      { q: "Dans le syndrome de Turner, quels sont les signes cliniques constituants la triade diagnostique ?", opts: ["A. Le lymphoedème.", "B. L'aménorrhée primaire.", "C. La petite taille.", "D. Le ptérigium coli.", "E. Le retard mental."], ans: ["B","C","D"] },
-      { q: "Parmi les formules chromosomiques ci-dessous, lesquelles correspondent à un syndrome de Turner ?", opts: ["A. 46Xdel(Xp).", "B. 45X0.", "C. 45X/46XX.", "D. 46Xr(X).", "E. 47XXX/46XX."], ans: ["A","B","C","D"] },
-      { q: "Dans le syndrome de Turner, quelle est la formule chromosomique nécessitant une gonadectomie ?", opts: ["A. 46Xdel(Xp).", "B. 46Xdel(Xq).", "C. 45X/46XX/47XXX.", "D. 45X/46XY.", "E. 46Xi(Xq)."], ans: ["D"] },
-      { q: "A propos du syndrome de Turner en période néonatale, quelles sont les propositions JUSTES ?", opts: ["A. L'apparition du syndrome de Turner en période néonatale est liée à un âge paternel avancé.", "B. Le syndrome de Turner en période néonatale est caractérisé par le syndrome de Bonnevie-Ullrich.", "C. Le chromosome X perdu est le plus souvent d'origine maternelle.", "D. Le chromosome X perdu est le plus souvent d'origine paternelle.", "E. La mise en évidence d'une formule 45X/46XY nécessite une gonadectomie."], ans: ["B","E"] },
-      { q: "Toutes ces anomalies sont observées dans le syndrome de Turner néonatal SAUF une, laquelle ?", opts: ["A. Lymphoedème.", "B. Petite taille.", "C. Hypotonie.", "D. Hypotrophie.", "E. Pterygium colli."], ans: ["C"] },
-      { q: "Dans le syndrome de Turner néonatal, quelle anomalie viscérale faut-il rechercher en premier ?", opts: ["A. Rein en fer à cheval.", "B. Rein pelvien.", "C. Hypoplasie des ovaires.", "D. Diastasis radio-lunaire.", "E. Coarctation de l'aorte."], ans: ["E"] },
-      { q: "Dans le syndrome de Turner, quels sont les signes cliniques constituants la triade diagnostique ?", opts: ["A. Aménorrhée primaire.", "B. Petite taille.", "C. Ptérigium coli.", "D. Retard mental.", "E. Epicanthus."], ans: ["A","B","C"] },
-      { q: "Dans le syndrome de Turner, quelle est la formule chromosomique qui s'accompagne de retard mental ?", opts: ["A. 46Xdel(Xp).", "B. 46XI(Xq).", "C. 46Xdel(Xq).", "D. 45X/46XX/47XXX.", "E. 46X r(X)."], ans: ["E"] },
-      { q: "L'inactivation de l'X est un phénomène :", opts: ["A. Pathologique.", "B. Physiologique.", "C. Aléatoire.", "D. Embryologique.", "E. Non transmissible."], ans: ["B","D","E"] },
-      { q: "Dans le syndrome de Turner, quelle est la formule chromosomique qui s'accompagne de retard mental ?", opts: ["A. 46.Xdel(Xp).", "B. 46Xr(X).", "C. 45X/46.XX/47.XXX.", "D. 45.X/46.XY.", "E. 46.X.i(Xq)."], ans: ["B"] },
-      { q: "A propos du syndrome de Turner, quelles sont les propositions justes ?", opts: ["A. C'est la seule monosomie complète viable.", "B. Sa survenue n'est pas influencée par l'âge maternel ou paternel.", "C. La fertilité est normale.", "D. Le phénotype est masculin avec dysmorphie et retard mental.", "E. La formule chromosomique la plus fréquente est 46Xdel(Xp)."], ans: ["A","B"] },
-      { q: "Dans le syndrome de Turner, quelle est la formule chromosomique nécessitant une gonadectomie ?", opts: ["A. 46X.del(Xp).", "B. 46.X.del(Xq).", "C. 45X/46.XX/47XXX.", "D. 45X/46.XY.", "E. 46X.i(Xq)."], ans: ["D"] },
-    ]
-  }
-];
+      { id: "t21", label: "Trisomie 21", accent: "#059669", light: "#d1fae5", border: "#34d399", questions: [
+          { q: "La trisomie 21 est :", opts: ["A. Due à une carence en acide folique avant la conception", "B. Une anomalie chromosomique constitutionnelle déséquilibrée", "C. La plus fréquente des anomalies chromosomiques", "D. La première cause des retards mentaux", "E. Liée à l'âge des grands parents"], ans: ["B","C","D"] },
+          { q: "Les signes cliniques retrouvés dans la trisomie 21 néonatale sont :", opts: ["A. Une Hypertonie", "B. Une hyperlaxité ligamentaire", "C. Un livédo", "D. Un diastasis des muscles droits de l'abdomen", "E. Une hernie ombilicale"], ans: ["B","C","D","E"] },
+          { q: "Dans la trisomie 21, quelles sont les malformations et les complications à rechercher systématiquement en période néonatale ?", opts: ["A. Les malformations cardiaques", "B. Les malformations digestives", "C. La cataracte congénitale", "D. La surdité congénitale", "E. Le diabète"], ans: ["A","B","C","D"] },
+          { q: "Au premier trimestre de la grossesse, le calcul de risque d'une trisomie 21 tient compte de plusieurs éléments, lesquels ?", opts: ["A. Le triple test", "B. L'âge de la mère", "C. La mesure de la clarté nucale", "D. Le dosage de la fraction β libre HCG", "E. Le dosage de la PAPP-A"], ans: ["B","C","D","E"] },
+          { q: "Dans la trisomie 21, la ségrégation alterne selon le mode 2:1 d'une translocation (14:21) produit :", opts: ["A. 2 gamètes équilibrés", "B. Un gamète Normal et un gamète transloqué (dérivé)", "C. 4 gamètes déséquilibrés", "D. 4 gamètes déséquilibrés et 2 gamètes équilibrés", "E. 6 gamètes déséquilibrés"], ans: ["B"] },
+          { q: "(Cas clinique – 15 SA) Les signes cliniques qui peuvent être retrouvés dans la trisomie 21 prénatale sont :", opts: ["A. Un hygroma", "B. Une longueur du fémur inférieure à -1DS", "C. Une dolichocéphalie", "D. Une syndactylie des 2ème et 3ème orteils", "E. Une hernie ombilicale"], ans: ["A","B","D","E"] },
+          { q: "Les signes biologiques indiquant une trisomie 21 prénatale sont :", opts: ["A. Une augmentation de la fraction β libre de l'HCG", "B. Une diminution de l'alpha fœtoprotéine (AFP)", "C. Une augmentation de l'œstriol non conjugué (uE3)", "D. Une augmentation de la PAPP-A", "E. Une augmentation de la progestérone"], ans: ["A","B"] },
+          { q: "Le calcul de risque de survenue de la trisomie 21 tient compte de plusieurs éléments, lesquels ?", opts: ["A. L'âge de la mère", "B. Les malformations associées", "C. La mesure de la clarté nucale", "D. Le taux de la fraction β libre HCG", "E. Le taux de la progestérone"], ans: ["A","C","D"] },
+          { q: "Les complications qui peuvent être rencontrées dans la trisomie 21 sont :", opts: ["A. Les infections à répétitions", "B. La leucémie chronique", "C. L'hypothyroïdie", "D. L'épilepsie", "E. La surdité"], ans: ["A","C","D","E"] },
+          { q: "La surveillance annuelle d'un enfant de 6 ans atteint de trisomie 21 comporte :", opts: ["A. Une échographie cardiaque même en l'absence de symptomatologie", "B. La recherche systématique de la maladie cœliaque", "C. Un examen ORL", "D. Une radiographie de l'atlas et l'axis", "E. Le dosage de T4 et TSH"], ans: ["C","D","E"] },
+          { q: "Les signes dysmorphiques retrouvés dans la trisomie 21 sont :", opts: ["A. L'épicanthus", "B. L'hyperplasie des os propres du nez", "C. Le pli palmaire transversal unique", "D. La brachymésophalangie du 3ème doigt", "E. Les fentes palpébrales obliques en haut et en dehors"], ans: ["A","C","E"] },
+          { q: "Les marqueurs sériques utilisés dans le diagnostic prénatal de la trisomie 21 sont :", opts: ["A. La Fraction β libre de l'HCG", "B. La Protéine plasmatique placentaire de type A (PAPPA)", "C. L'alpha fœtoprotéine (AFP)", "D. L'œstriol non conjugué (uE3)", "E. La progestérone"], ans: ["A","B","C","D"] },
+          { q: "Le risque de récurrence de la trisomie 21 chez un couple avec un enfant ayant le caryotype 47,XX,+21 est de :", opts: ["A. 0%", "B. 1%", "C. 25%", "D. 15%", "E. 20%"], ans: ["B"] },
+          { q: "Le dépistage néonatal non invasif de la trisomie 21 par l'analyse de l'ADN fœtal est réalisé par :", opts: ["A. Amniocentèse", "B. Biopsie du trophoblaste", "C. Prise de sang chez la future mère", "D. Repérage échographique", "E. Prélèvement du sang du cordon"], ans: ["C"] },
+          { q: "Parmi les formules chromosomiques suivantes, quelles sont celles qui correspondent à une trisomie 21 ?", opts: ["A. 46,XY,der(21;22)+21", "B. 45,XY,der(21;22)", "C. 46,XX,t(15;21)+21", "D. 46,XX/47,XX,+21", "E. 47,XX,t(15;21)+21"], ans: ["A","C","D"] },
+          { q: "La surveillance annuelle d'un enfant de 3 ans atteint de trisomie 21 comporte :", opts: ["A. Une échographie cardiaque même en l'absence de symptomatologie", "B. La recherche de la maladie cœliaque même en l'absence de symptomatologie", "C. Une radiographie de l'atlas et l'axis", "D. Un examen ophtalmologique", "E. Le dosage de T4 et TSH"], ans: ["D","E"] },
+          { q: "Quelles sont les formules chromosomiques de la trisomie 21 dues à une translocation robertsonienne ?", opts: ["A. 46,XY,der(14;21),+21", "B. 45,XY,t(21;21)", "C. 47,XX,+21", "D. 46,XY,t(15;21),+21", "E. 46,XY,rob(15;21),+21"], ans: ["A","D","E"] },
+          { q: "Les complications rencontrées dans la trisomie 21 sont :", opts: ["A. Le diabète", "B. L'hyperthyroïdie", "C. La cataracte sénile", "D. La surdité", "E. Les syndromes myélodysplasiques"], ans: ["A","C","D"] },
+          { q: "Dans la trisomie 21, l'amniocentèse est proposée lorsque :", opts: ["A. Le triple test montre un risque ≥ 1/250", "B. Il y a des antécédents antérieurs d'anomalies chromosomiques dans la descendance", "C. L'un des parents est porteur d'anomalies chromosomiques équilibrées", "D. Il y a absence de signes échographiques au premier trimestre", "E. L'âge maternel est supérieur à 36 ans"], ans: ["A","B","C"] },
+          { q: "Le risque de récurrence d'une trisomie 21 par t(21;21) est de :", opts: ["A. 0%", "B. 25%", "C. 50%", "D. 75%", "E. 100%"], ans: ["E"] },
+          { q: "Dans la trisomie 21, le retard mental :", opts: ["A. Associe des difficultés de langage", "B. S'établit rapidement", "C. est de QI 50 à l'âge de cinq ans", "D. Décroît après l'âge de cinq ans", "E. S'associe à des troubles du comportement"], ans: ["A","B","C","D"] },
+          { q: "Au Maroc l'incidence de la trisomie 21 est distribuée en 2 pics, lesquels ?", opts: ["A. Un premier pic lié à l'âge maternel", "B. Un premier pic lié à une natalité élevée", "C. Un premier pic lié à l'âge paternel", "D. Un deuxième pic lié à l'âge maternel", "E. Un deuxième pic lié à une natalité élevée"], ans: ["A","E"] },
+          { q: "Toutes ces anomalies sont observées dans la trisomie 21 sauf une, laquelle ?", opts: ["A. Épicanthus", "B. Hyperplasie des os propres du nez", "C. Hypotonie", "D. Faciès plat", "E. Clinodactylie du 5ème doigt"], ans: ["B"] },
+          { q: "À propos de la trisomie 21, quelle est la formule chromosomique nécessitant la réalisation du caryotype constitutionnel des parents ?", opts: ["A. 47XY+21", "B. 47XY+21/46", "C. 46XX t(14;21)21", "D. 46XX+21", "E. 47XX+21/46"], ans: ["C"] },
+          { q: "Quel est le risque d'avoir un enfant atteint de trisomie 21 chez un parent ayant une translocation (21;21) équilibrée ?", opts: ["A. 50%", "B. 75%", "C. 25%", "D. 1%", "E. 100%"], ans: ["E"] },
+          { q: "Dans la trisomie 21, le diagnostic prénatal est indiqué devant :", opts: ["A. ATCD familiaux de trisomie 21", "B. Âge maternel inférieur à 38 ans", "C. Marqueurs sériques maternels > 1/250", "D. Présence d'hygroma", "E. Présence de malformation cardiaque"], ans: ["A","C","D","E"] },
+          { q: "Les complications rencontrées dans la trisomie 21 sont :", opts: ["A. Les infections", "B. L'absence du langage", "C. L'hypothyroïdie", "D. La cataracte", "E. La surdité"], ans: ["A","C","D","E"] },
+          { q: "À propos de la trisomie 21, quelles sont les 2 formules chromosomiques nécessitant la réalisation du caryotype constitutionnel des parents ?", opts: ["A. 47XY+21", "B. 46XY/47XY21", "C. 46XXt(14;21)21", "D. 46XXder(21;21)21", "E. 46XX/47XX21"], ans: ["C","D"] },
+          { q: "(Cas clinique – translocation 14:21 transmise par la mère) Quels sont les signes de dysmorphie faciale qui peuvent être observés ?", opts: ["A. L'épicanthus", "B. Les taches de Brushfield", "C. Le faciès allongé", "D. L'hypoplasie des os propres du nez", "E. L'hyportélorisme"], ans: ["A","B","D"] },
+          { q: "Cette famille désire d'autres enfants, quel est le risque d'avoir un autre enfant atteint de trisomie 21 (mère porteuse t(14;21)) ?", opts: ["A. 0%", "B. 1%", "C. 20%", "D. 25%", "E. 100%"], ans: ["C"] },
+          { q: "Quels sont les indications du diagnostic prénatal de la trisomie 21 ?", opts: ["A. La présence de translocation parentale", "B. L'âge maternel supérieur à 38 ans", "C. La présence d'anomalies échographiques", "D. Le taux de Marqueurs sériques maternels (triple test) inférieur à 1/250", "E. Le taux de Marqueurs sériques maternels (triple test) supérieur à 1/250"], ans: ["A","B","C","E"] },
+          { q: "(Cas clinique – translocation 21:21 transmise par le père) Toutes ces anomalies peuvent être observées dans la trisomie 21 sauf une, laquelle ?", opts: ["A. Épicanthus", "B. Taches de Brushfield", "C. Hyper laxité ligamentaire", "D. Hypertonie", "E. Clinodactylie du 5ème doigt"], ans: ["D"] },
+          { q: "Les examens complémentaires à demander sont :", opts: ["A. Une échographie cardiaque", "B. Une échographie abdominale", "C. Une NFS", "D. Une TDM cérébrale", "E. Un dosage de T4 TSH"], ans: ["A","B","C","E"] },
+          { q: "Quelle est la formule chromosomique du père du garçon trisomique 21 (translocation 21;21) ?", opts: ["A. 46XY", "B. 46XY†(21;21)", "C. 46XY†(21;21)", "D. 45XY+(21;21)", "E. 45XY(21;21)"], ans: ["D"] },
+          { q: "Quelle est la formule chromosomique du garçon trisomique 21 (translocation 21;21) ?", opts: ["A. 46,XY", "B. 46,XY,t(21;21)", "C. 46,XY,t(21;21)+21", "D. 45,XY,t(21;21)", "E. 45,XY,t(21;21),+21"], ans: ["C"] },
+          { q: "Cette famille désire avoir d'autres enfants, quel est le risque d'avoir un autre enfant atteint de trisomie 21 (père porteur t(21;21)) ?", opts: ["A. 0%", "B. 1%", "C. 25%", "D. 50%", "E. 100%"], ans: ["E"] },
+          { q: "Au Maroc la trisomie 21 :", opts: ["A. Est la plus fréquente des anomalies chromosomiques", "B. Est la première cause des retards mentaux", "C. Touche plus les filles que les garçons", "D. A une incidence qui varie avec l'âge de la mère", "E. A une incidence qui varie avec l'âge du père"], ans: ["A","B","D"] },
+          { q: "Les signes dysmorphiques retrouvés dans la trisomie 21 sont :", opts: ["A. Un pli palmaire unique", "B. Une clinodactylie du 5ème doigt", "C. Une nuque aplatie avec excès de peau", "D. Une microglossie", "E. Des tâches de Brushfield"], ans: ["A","B","C","E"] },
+          { q: "Les malformations viscérales qui peuvent être retrouvées dans la trisomie 21 sont :", opts: ["A. Un méningiome cérébral", "B. Une sténose duodénale", "C. Une persistance du canal artériel", "D. Une cataracte", "E. Une luxation congénitale de la hanche"], ans: ["B","C","D"] },
+          { q: "Les complications qui peuvent être rencontrées dans la trisomie 21 sont :", opts: ["A. La surdité", "B. Le diabète", "C. L'hypothyroïdie", "D. La leucémie aiguë", "E. L'occlusion intestinale"], ans: ["A","C","D"] },
+          { q: "Le caryotype d'une femme est : 45XX t(21;21). Quel est son risque d'avoir un enfant avec caryotype normal ?", opts: ["A. 0", "B. 1/3", "C. 1/6", "D. 1/2", "E. 1/100"], ans: ["A"] },
+          { q: "La mère âgée de 27 ans d'un trisomique 21 ayant un caryotype 47 XX+21. Le risque qu'elle a d'avoir un autre enfant trisomique 21 est de :", opts: ["A. 0", "B. 1/3", "C. 1/6", "D. 1/2", "E. 1%"], ans: ["E"] },
+          { q: "Les indications d'un diagnostic prénatal dans la trisomie 21 sont :", opts: ["A. Un couple ayant un enfant porteur d'une trisomie 21", "B. Âge maternel supérieur à 38 ans", "C. Marqueurs sériques maternels < 1/250", "D. Présence d'hygroma", "E. Aucune réponse n'est juste"], ans: ["A","B","D"] },
+          { q: "(Cas clinique nouveau-né) À l'examen clinique, les signes de dysmorphie faciale peuvent être présents SAUF un :", opts: ["A. Des fentes palpébrales obliques en haut et en dehors", "B. Une hyperplasie des os propres du nez", "C. Une Brachymésophalangie du 5ème doigt", "D. Une nuque aplatie avec excès de peau", "E. Un pli palmaire unique"], ans: ["B"] },
+          { q: "Quels sont les 2 signes d'examen clinique à rechercher en priorité ?", opts: ["A. Les tâches de Brushfield", "B. Le souffle cardiaque", "C. L'hyperlaxité ligamentaire", "D. L'hypotonie", "E. L'épicanthus"], ans: ["B","D"] },
+          { q: "Quels sont les examens complémentaires que vous allez demander ?", opts: ["A. Une TDM cérébrale", "B. Une échographie cardiaque", "C. Une échographie abdominale", "D. Le dosage de T3 TSH", "E. Une radiographie des os longs"], ans: ["B","C","D"] },
+          { q: "Après la réalisation des examens complémentaires, plusieurs malformations peuvent être retrouvées, lesquelles ?", opts: ["A. Un canal atrio-ventriculaire", "B. Une sténose duodénale", "C. Une cataracte congénitale", "D. Une surdité", "E. Une hypoplasie de la verge"], ans: ["A","B","C","D"] },
+          { q: "La formule 46XY+21 correspond à une forme de trisomie 21 :", opts: ["A. Libre et homogène", "B. En mosaïque", "C. Par duplication", "D. Par translocation robertsonienne", "E. Aucune réponse n'est juste"], ans: ["D"] },
+          { q: "Un caryotype des parents a montré chez le père la formule chromosomique : 45 XY (sans précision). Il est :", opts: ["A. Trisomique 21", "B. Trisomique 14", "C. Porteur sain", "D. Monosomique 14", "E. Monosomique 21"], ans: ["C"] },
+          { q: "Le risque dans cette famille d'avoir un autre enfant ayant une trisomie 21 est de :", opts: ["A. 0% (aucun risque)", "B. 1%", "C. 5%", "D. 50%", "E. 100%"], ans: ["C"] },
+          { q: "La fréquence de la trisomie 21 parmi les nouveau-nés est maintenant bien connue, elle est de :", opts: ["A. 1/8000", "B. 1/4000", "C. 1/2000", "D. 1/120", "E. 1/700"], ans: ["E"] },
+          { q: "Quels sont les signes cliniques de dysmorphie faciale retrouvés dans la trisomie 21 ?", opts: ["A. Épicanthus", "B. Hypoplasie des os propres du nez", "C. Brachymésophalangie du 5ème doigt", "D. Hypolaxité ligamentaire", "E. Hypotélorisme"], ans: ["A","B","C"] },
+          { q: "Quels sont les malformations viscérales rencontrées dans la trisomie 21 ?", opts: ["A. Rein en fer à cheval", "B. Atrésie pulmonaire", "C. Œil en cyclope", "D. Cataracte congénitale", "E. Canal atrio-ventriculaire"], ans: ["D","E"] },
+          { q: "Les complications pouvant engager le pronostic vital dans la trisomie 21 sont :", opts: ["A. La leucémie myéloïde chronique", "B. Les fractures spontanées", "C. Le diabète", "D. L'infarctus du myocarde", "E. L'épilepsie"], ans: ["D","E"] },
+          { q: "Dans la trisomie 21, la forme cytogénétique « libre et homogène » est retrouvée dans :", opts: ["A. 95% des cas", "B. 75% des cas", "C. 50% des cas", "D. 3% des cas", "E. 2% des cas"], ans: ["A"] },
+          { q: "Les mécanismes cytogénétiques expliquant la survenue de la trisomie 21 en mosaïque sont :", opts: ["A. Les accidents mitotiques post-zygotiques", "B. Les accidents méiotiques", "C. La réduction de trisomie 21 présente au stade zygotique", "D. L'anomalie de ségrégation des chromosomes par non-disjonction méiotique", "E. Les translocations réciproques"], ans: ["A","C"] },
+          { q: "Le caryotype d'une femme ayant un frère trisomique 21 est : 45XX t(14;21). Le risque qu'elle a d'avoir un enfant avec caryotype normal est de :", opts: ["A. 0", "B. 1/3", "C. 1/6", "D. 1/2", "E. 1/100"], ans: ["C"] },
+          { q: "Les indications d'un diagnostic prénatal dans la trisomie 21 sont :", opts: ["A. Un couple ayant un enfant porteur d'une trisomie 21", "B. L'âge maternel supérieur à 34 ans", "C. Les marqueurs sériques maternels < 1/250", "D. L'épaisseur de la nuque supérieure à 3 mm", "E. La présence d'hygroma"], ans: ["A","D","E"] },
+          { q: "Au Maroc la répartition de la trisomie 21 en fonction de l'âge maternel suit une courbe avec 2 pics liés à :", opts: ["A. La natalité maximum", "B. L'âge avancé", "C. Le niveau socio-économique", "D. L'état de vaccination", "E. L'origine ethnique"], ans: ["A","B"] },
+          { q: "(Cas clinique nouveau-né Al) Quels sont les signes de dysmorphie faciale ?", opts: ["A. Des fentes palpébrales obliques en bas et en dehors", "B. Une hyperplasie des os propres du nez", "C. Une Brachymésophalangie du 5ème doigt", "D. Une nuque aplatie avec excès de peau", "E. Un pli palmaire unique"], ans: ["C","D","E"] },
+          { q: "(Cas clinique nouveau-né Al) Quels sont les 2 signes d'examen clinique à rechercher en priorité ?", opts: ["A. Les tâches de Brushfield", "B. Le souffle cardiaque", "C. Le pli palmaire unique", "D. L'hypotonie", "E. L'hyper laxité ligamentaire"], ans: ["B","D"] },
+          { q: "(Cas clinique nouveau-né Al) Quels sont les examens complémentaires à demander ?", opts: ["A. Une échographie cardiaque", "B. Une échographie abdominale", "C. Dosage de T3 T4 TSH", "D. Une ponction lombaire", "E. Une TDM cérébrale"], ans: ["A","B","C"] },
+          { q: "Le mécanisme pouvant expliquer le phénotype de trisomie 21 avec duplication de la région 21q22 :", opts: ["A. La consanguinité", "B. L'âge maternel avancé", "C. Une prise médicamenteuse au cours de la grossesse", "D. L'effet de l'épigénétique", "E. L'effet de dosage génique"], ans: ["E"] },
+          { q: "Dans cette famille, quel est le risque d'avoir un autre enfant atteint de trisomie 21 (parents caryotype normal, enfant T21 par duplication) ?", opts: ["A. 0%", "B. 50%", "C. 1%", "D. 100%", "E. 25%"], ans: ["C"] },
+          { q: "À propos de la trisomie 21, quelles sont les 2 formules chromosomiques nécessitant la réalisation du caryotype constitutionnel des parents ?", opts: ["A. 47XY,+21", "B. 47XY,+21/46,XY", "C. 46XX t(14;21)+21", "D. 46XXi(21)(q10)", "E. 47XX,+21/46,XX"], ans: ["C","D"] },
+          { q: "Quel est le risque d'avoir un enfant atteint de trisomie 21 chez un parent ayant une translocation (21;21) équilibrée ?", opts: ["A. 1/6", "B. 1/3", "C. 1/2", "D. 1%", "E. 100%"], ans: ["E"] },
+          { q: "Dans la trisomie 21, le diagnostic prénatal est indiqué devant :", opts: ["A. Âge paternel supérieur à 60 ans", "B. Âge maternel supérieur à 38 ans", "C. Marqueurs sériques maternels > 1/250", "D. Présence d'une CIV", "E. Présence d'hygroma"], ans: ["B","C","D","E"] },
+          { q: "Au Maroc l'incidence de la trisomie 21 :", opts: ["A. Augmente avec l'âge paternel", "B. Est de 1/700", "C. Varie avec l'âge maternel", "D. Est distribuée en 2 pics", "E. Diminue avec l'apport en vitamines"], ans: ["B","C","D"] },
+          { q: "Toutes ces anomalies sont observées dans la trisomie 21 sauf une, laquelle ?", opts: ["A. Épicanthus", "B. Taches de Brushfield", "C. Hypertonie", "D. Hyper laxité ligamentaire", "E. Clinodactylie du 5ème doigt"], ans: ["C"] },
+          { q: "La sœur d'un trisomique 21 a un caryotype 45 XX t(14;21). Le risque qu'elle a d'avoir un enfant trisomique 21 est :", opts: ["A. 0", "B. 1/3", "C. 1/6", "D. 1/2", "E. 1%"], ans: ["C"] },
+          { q: "Le caryotype 48 XXY+21 correspond à un sujet :", opts: ["A. Masculin avec phénotype normal", "B. Masculin avec aspect androïde", "C. Féminin de grande taille avec hyperpilosité", "D. Masculin de grande taille avec hyperpilosité", "E. Masculin avec dysmorphie et retard mental"], ans: ["B"] },
+      ]},
+      { id: "t9", label: "Trisomie 8/9", accent: "#d97706", light: "#fef3c7", border: "#fcd34d", questions: [
+          { q: "Dans la trisomie 8 en mosaïque :", opts: ["A. Les garçons sont plus atteints que les filles", "B. Les malformations osseuses sont rares", "C. La déficience intellectuelle est présente", "D. Le déficit intellectuel dépend du pourcentage de cellules trisomiques", "E. Le risque de récurrence est très faible"], ans: ["A","C","E"] },
+          { q: "Dans la trisomie 8, quelles sont les propositions justes ?", opts: ["A. Le conseil génétique est rassurant", "B. La dysmorphie faciale est caractéristique", "C. La déficience intellectuelle est proportionnelle au pourcentage des cellules trisomiques", "D. Le tableau clinique comporte des malformations de l'appareil squelettique et osseux", "E. La déficience intellectuelle est très profonde"], ans: ["A","D"] },
+          { q: "Dans la trisomie 8 :", opts: ["A. La dysmorphie faciale est caractéristique", "B. La déficience intellectuelle est proportionnelle au pourcentage des cellules trisomiques", "C. Le tableau clinique comporte des malformations de l'appareil squelettique et osseux", "D. Le conseil génétique est rassurant", "E. Aucune réponse n'est juste"], ans: ["C","D"] },
+          { q: "À propos de la trisomie 9, quelles sont les propositions justes ?", opts: ["A. Elle est viable lorsqu'elle est libre et homogène", "B. Elle est viable lorsqu'elle est en mosaïque", "C. Le tableau clinique comporte des anomalies de la face", "D. Le tableau clinique comporte des malformations de l'appareil squelettique et osseux", "E. Le signe clinique pathognomonique est la présence d'un œil en cyclope"], ans: ["B","C","D"] },
+          { q: "À propos de la trisomie 8, quelles sont les propositions justes ?", opts: ["A. Elle est viable lorsqu'elle est en mosaïque", "B. Le tableau clinique comporte des anomalies de la face", "C. Le tableau clinique comporte des malformations de l'appareil squelettique et osseux", "D. Le signe clinique pathognomonique est la présence d'un œil en cyclope", "E. Le poids à la naissance est habituellement normal"], ans: ["A","C","E"] },
+      ]},
+      { id: "t13", label: "Trisomie 13", accent: "#dc2626", light: "#fee2e2", border: "#fca5a5", questions: [
+          { q: "Les signes cliniques ci-dessous peuvent être présents dans la trisomie 13 SAUF un, lequel ?", opts: ["A. Une holoproencéphalie", "B. Un hypotélorisme", "C. Une dolichocéphalie", "D. Une fente labio-palatine", "E. Une hexadactylie"], ans: ["C"] },
+          { q: "L'âge maternel élevé est un facteur de risque des maladies chromosomiques suivantes :", opts: ["A. La trisomie 9 en mosaïque", "B. La trisomie X", "C. La trisomie 13", "D. La trisomie 18", "E. Le syndrome de Turner"], ans: ["A","B","C","D"] },
+          { q: "Les signes cliniques retrouvés dans la trisomie 13 sont :", opts: ["A. Un épicanthus", "B. Des fentes palpébrales anti-mongoloïdes", "C. Une fente labio-palatine", "D. Une anophtalmie", "E. Un hypertélorisme"], ans: ["C","D"] },
+          { q: "Les signes cliniques ci-dessous peuvent être présents dans la trisomie 13 SAUF un, lequel ?", opts: ["A. Une holoproencéphalie", "B. Un hypotélorisme", "C. Une dolichocéphalie", "D. Une fente labio-palatine", "E. Une hexadactylie"], ans: ["C"] },
+          { q: "(Cas clinique – biopsie villosités choriales) Ce dépistage prénatal :", opts: ["A. Est réalisé sans consentement écrit", "B. Est réalisé entre 10 et 12 semaines d'aménorrhée", "C. Est réalisé uniquement par voie trans-cervicale", "D. Doit être réalisé sur 2 prélèvements indépendants", "E. Permet de faire un examen cytogénétique direct rapide"], ans: ["B"] },
+          { q: "Toutes ces anomalies sont rencontrées dans la trisomie 13 SAUF une, laquelle ?", opts: ["A. L'holoproencéphalie", "B. L'hypertélorisme", "C. La fente labio-palatine", "D. L'hydronéphrose", "E. L'hexadactylie"], ans: ["B"] },
+          { q: "Toutes ces anomalies sont observées dans la trisomie 13 SAUF une, laquelle ?", opts: ["A. Hypotélorisme", "B. Fente labio-palatine", "C. Hexadactylie", "D. Hypertonie", "E. Omphalocèle"], ans: ["D"] },
+          { q: "Dans la trisomie 13 :", opts: ["A. Le risque augmente avec l'âge maternel", "B. Les malformations viscérales entraînent le décès durant les trois premiers mois de vie", "C. L'holoproencéphalie est présente", "D. Le risque de récurrence est faible", "E. Le diagnostic prénatal est impossible"], ans: ["A","B","C"] },
+          { q: "Dans la trisomie 13, quelle est la formule chromosomique nécessitant la réalisation du caryotype constitutionnel des parents ?", opts: ["A. 47,XY,+13", "B. 47,XY,+13/46,XY", "C. 47,XX,+13", "D. 46,XX,i(13)q(10)", "E. 47,XX,+13/46,XX"], ans: ["D"] },
+          { q: "Les signes cliniques retrouvés dans la trisomie 13 sont :", opts: ["A. Des pieds bots", "B. Une hexadactylie", "C. Un œil en cyclope", "D. Un hypertélorisme", "E. Une fente labio-palatine"], ans: ["B","C","E"] },
+          { q: "Dans la trisomie 13 :", opts: ["A. Le risque de l'avoir augmente avec l'âge maternel", "B. 80% des fœtus atteints de trisomie 13 décèdent in utero", "C. Le risque de récurrence est faible", "D. La prise en charge médicale est limitée aux soins de support et de confort", "E. Le traitement chirurgical des malformations modifie le pronostic"], ans: ["A","B","D"] },
+          { q: "À propos de la trisomie 13, quelles sont les propositions FAUSSES ?", opts: ["A. Le risque de récurrence est très augmenté", "B. Le tableau clinique comporte un syndrome malformatif léger", "C. La survie moyenne est au-delà de 2 ans", "D. Le risque augmente avec l'âge maternel", "E. Le risque augmente avec l'âge paternel"], ans: ["B","C","E"] },
+          { q: "À propos de la trisomie 13, quelles sont les propositions justes ?", opts: ["A. Le caryotype des parents doit être réalisé quel que soit la formule chromosomique de l'enfant", "B. Le tableau clinique inclut un syndrome dysmorphique et malformatif grave", "C. 90% des fœtus atteints de trisomie 13 décèdent in utero", "D. Son risque augmente avec l'âge maternel", "E. Son risque de récurrence est faible"], ans: ["B","C","D"] },
+          { q: "Dans la trisomie 13 :", opts: ["A. La majorité des fœtus décèdent in utéro", "B. Le risque de survenue dépend de l'âge maternel", "C. La dysmorphie se caractérise par la griffe digitale", "D. La dysmorphie se caractérise par le pied en piolet", "E. Aucune réponse n'est juste"], ans: ["A","B"] },
+          { q: "La trisomie 13 :", opts: ["A. Est une maladie rapidement mortelle avant 3 mois", "B. Peut être secondaire à une non-ségrégation chromosomique", "C. Associe un hypotélorisme et un œil en cyclope", "D. A un risque de survenue indépendant de l'âge maternel", "E. Se caractérise par la griffe digitale"], ans: ["A","B","C"] },
+          { q: "La trisomie 13 est une maladie :", opts: ["A. Dont le risque d'apparition augmente avec l'âge paternel", "B. Dont le risque d'apparition augmente avec l'âge maternel", "C. Connue aussi sous le nom du syndrome de Down", "D. Connue aussi sous le nom du syndrome de Patau", "E. Connue aussi sous le nom du syndrome d'Edward"], ans: ["B","D"] },
+          { q: "Les malformations viscérales rencontrées dans la trisomie 13 sont :", opts: ["A. L'holoproencéphalie", "B. La fente labio-palatine", "C. La griffe digitale", "D. Les pieds en piolet", "E. L'hexadactylie"], ans: ["A","B","E"] },
+          { q: "Les signes cliniques de la trisomie 13 sont :", opts: ["A. La griffe digitale", "B. La fente labio-palatine", "C. L'œil en cyclope", "D. L'hexadactylie", "E. Les pieds en piolet"], ans: ["B","C","D"] },
+          { q: "À propos de la trisomie 13, quelles sont les propositions justes ?", opts: ["A. Le risque de récurrence est de 1% chez des parents ayant déjà un enfant trisomique 13", "B. Son risque de récurrence est très augmenté", "C. Le tableau clinique comporte un syndrome malformatif léger", "D. 90% des enfants atteints de trisomie 13 décèdent vers l'âge de 6 mois", "E. Son risque augmente avec l'âge maternel"], ans: ["A","E"] },
+          { q: "À propos de la trisomie 13, quelles sont les propositions justes ?", opts: ["A. Le caryotype des parents doit être réalisé quel que soit la formule chromosomique de l'enfant trisomique 13", "B. Le tableau clinique inclut un syndrome dysmorphique et malformatif grave", "C. 90% des fœtus atteints de trisomie 13 décèdent in utero", "D. Son risque augmente avec l'âge maternel", "E. Son risque de récurrence est très augmenté"], ans: ["B","C","D"] },
+      ]},
+      { id: "t18", label: "Trisomie 18", accent: "#7c3aed", light: "#ede9fe", border: "#c4b5fd", questions: [
+          { q: "La trisomie 18 en mosaïque :", opts: ["A. Peut résulter d'une réduction d'une trisomie 18 présente au stade zygotique", "B. Peut résulter d'un accident mitotique post-zygotique tardif", "C. Peut résulter d'une anomalie de ségrégation des chromosomes par non-disjonction méiotique", "D. Est d'évolution toujours mortelle", "E. Est responsable d'une stérilité chez les garçons"], ans: ["A","B"] },
+          { q: "Dans la trisomie 18 libre et homogène :", opts: ["A. Le risque de récurrence est de 1%", "B. La dolichocéphalie nécessite un traitement chirurgical", "C. La non-ségrégation des chromosomes 18 est liée à l'âge maternel", "D. La griffe digitale est fréquente", "E. Les fentes labiales et palatines sont rares"], ans: ["A","C","D"] },
+          { q: "Dans la trisomie 18 :", opts: ["A. La majorité des enfants décèdent avant 1 an", "B. Le bassin est étroit", "C. Le cou est court", "D. Les malformations cardiaques sont rares", "E. La prise en charge médicale est limitée aux soins de support et de confort"], ans: ["A","B","C","E"] },
+          { q: "La trisomie 18 de novo peut résulter :", opts: ["A. D'une non-disjonction mitotique", "B. D'une non-disjonction de la division méiotique réductionnelle", "C. D'un accident de la fécondation", "D. D'une non-disjonction de la division méiotique équationnelle", "E. D'un parent porteur d'une anomalie de structure équilibrée"], ans: ["B","D"] },
+          { q: "(Cas clinique – femme 30 ans, 14 SA) Quelles anomalies morphologiques peuvent être retrouvées à l'échographie ?", opts: ["A. Un retard de croissance intra-utérin", "B. Un nez petit et pointu", "C. Un prognathisme", "D. Une fente labiale et palatine", "E. Des pieds varus équin"], ans: ["A","B","D","E"] },
+          { q: "Les anomalies des mains retrouvées dans la trisomie 18 sont :", opts: ["A. Les poings fermés", "B. Le chevauchement du 2ème doigt sur le 3ème doigt", "C. Le chevauchement du 5ème doigt sur le 4ème doigt", "D. La clinodactylie du 5ème doigt", "E. La clinodactylie du 2ème doigt"], ans: ["A","B","C"] },
+          { q: "Les signes de dysmorphie peuvent être présents dans la trisomie 18 SAUF un, lequel ?", opts: ["A. Une micrognatie", "B. Un bassin large", "C. Des oreilles faunesques", "D. Une fente labiale", "E. Une griffe digitale"], ans: ["B"] },
+          { q: "Dans la trisomie 18 :", opts: ["A. Les filles sont plus touchées que les garçons", "B. 90% des enfants décèdent avant 1 an", "C. La prise en charge médicale est limitée aux soins de support et de confort", "D. Le traitement chirurgical des malformations modifie le pronostic", "E. La forme en mosaïque est la plus fréquente"], ans: ["A","B","C"] },
+          { q: "À propos de la trisomie 18, quelles sont les propositions justes ?", opts: ["A. Le tableau clinique inclut un syndrome dysmorphique et un syndrome malformatif", "B. La survie moyenne est au-delà de 10 ans", "C. Dans 80% des cas la trisomie 18 est libre et homogène", "D. Le signe clinique pathognomonique est la présence d'un nez en casque de guerrier grec", "E. La présence de griffe digitale"], ans: ["A","C","E"] },
+          { q: "À propos de la trisomie 18, quelles sont les propositions justes ?", opts: ["A. Les malformations viscérales sont rares", "B. Le tableau clinique inclut une dolichocéphalie et un cou court", "C. La moyenne de survie est supérieure à 10 ans", "D. Dans 80% des cas la trisomie 18 est libre et homogène", "E. Le signe clinique pathognomonique est la présence de la griffe digitale"], ans: ["B","D","E"] },
+          { q: "Les signes de dysmorphie peuvent être présents dans la trisomie 18 SAUF un, lequel ?", opts: ["A. Une dolichocéphalie", "B. Une micrognatie", "C. Des oreilles faunesques", "D. Une nuque aplatie avec excès de peau", "E. Une griffe digitale"], ans: ["D"] },
+          { q: "(Cas clinique – dolichocéphalie, fente labiale bilatérale, griffe digitale) Quel est le diagnostic le plus probable ?", opts: ["A. Le syndrome de Down", "B. Le syndrome de Patau", "C. Le syndrome de Wolf-Hirschhorn", "D. Le syndrome de cri du chat", "E. Le syndrome d'Edwards"], ans: ["E"] },
+          { q: "Quelle pourrait être la formule chromosomique de ce fœtus (syndrome d'Edwards) ?", opts: ["A. 46XX+18", "B. 47XX+18", "C. 46XX+13", "D. 47XX+13", "E. 47 XXX"], ans: ["B"] },
+          { q: "Une interruption thérapeutique de grossesse a été refusée. Après la naissance, quelle est l'espérance de vie de ce fœtus ?", opts: ["A. Supérieure à 5 ans", "B. Supérieure à 10 ans", "C. Supérieure à 20 ans", "D. Supérieure à 6 mois", "E. Inférieure à 6 mois"], ans: ["E"] },
+          { q: "(Cas clinique – nourrisson sexe féminin, trisomie 18) Quels sont les signes de dysmorphie faciale ?", opts: ["A. La dolichocéphalie", "B. Une micrognatie", "C. Une Brachymésophalangie du 5ème doigt", "D. Une nuque aplatie avec excès de peau", "E. Un pli palmaire unique"], ans: ["A","B","E"] },
+          { q: "Quels sont les anomalies de membres caractéristiques de la trisomie 18 ?", opts: ["A. L'attitude du suppliant", "B. Les poings fermés", "C. La griffe digitale", "D. Les pieds en piolet", "E. L'hyper laxité ligamentaire"], ans: ["A","B","C","D"] },
+          { q: "Quelle est la formule chromosomique la plus fréquente dans la trisomie 18 ?", opts: ["A. 46XX/47XX+18", "B. 46XXt(14;18)", "C. 46XXt(18;21)", "D. 47XY+18", "E. 47XX+18"], ans: ["E"] },
+          { q: "L'évolution de ce nouveau-né (trisomie 18) sera :", opts: ["A. Mortelle avant 6 mois", "B. Mortelle après 12 mois", "C. L'amélioration de la dysmorphie", "D. L'apparition d'une déficience mentale à 3 ans", "E. L'apparition des troubles du comportement alimentaire à 2 ans"], ans: ["A"] },
+          { q: "(Cas clinique – nourrisson Mouna, 2 mois, dolichocéphalie, oreilles faunesques, griffe digitale) Quel est votre diagnostic ?", opts: ["A. Le syndrome de Down", "B. Le syndrome d'Edwards", "C. Le syndrome de Patau", "D. Le syndrome de Wolf-Hirschhorn", "E. Le syndrome de cri du chat"], ans: ["B"] },
+          { q: "Quelle pourrait être la formule chromosomique de ce nourrisson (Mouna) ?", opts: ["A. 46XX+18", "B. 46XX+13", "C. 47XX+13", "D. 47XX+18", "E. 47 XXX"], ans: ["D"] },
+          { q: "L'espérance de vie de ce nourrisson (Mouna) est :", opts: ["A. Supérieure à 5 ans", "B. Supérieure à 10 ans", "C. Supérieure à 20 ans", "D. Inférieure à 3 mois", "E. Inférieure à 6 mois"], ans: ["E"] },
+          { q: "À propos de la trisomie 18, quelles sont les propositions justes ?", opts: ["A. Le caryotype des parents doit être réalisé quel que soit la formule chromosomique de l'enfant trisomique 18", "B. Le tableau clinique inclut un syndrome dysmorphique et un syndrome malformatif", "C. La trisomie 18 est caractérisée par une moyenne de survie au-delà de 10 ans", "D. Dans 80% des cas la trisomie 18 est libre et homogène", "E. Le signe clinique pathognomonique est la présence d'un nez en casque de guerrier grec"], ans: ["B","D"] },
+          { q: "(Cas clinique – RCIU, fente labiale et palatine, griffe digitale) Quel diagnostic suspectez-vous ?", opts: ["A. Trisomie 13", "B. Trisomie 18", "C. Trisomie 21", "D. Le syndrome de Wolf-Hirschhorn", "E. Le syndrome de cri de chat"], ans: ["B"] },
+      ]},
+      { id: "klinefelter", label: "Klinefelter", accent: "#2563eb", light: "#dbeafe", border: "#93c5fd", questions: [
+          { q: "Dans le syndrome de Klinefelter :", opts: ["A. Le caryotype sur lignée lymphocytaire prédit la constitution chromosomique testiculaire.", "B. Le traitement substitutif par les androgènes avant la puberté améliore la fertilité.", "C. La fécondité spontanée est impossible.", "D. Le développement de la verge est normal.", "E. La gynécomastie est constante."], ans: ["C","D"] },
+          { q: "Dans le syndrome de Klinefelter :", opts: ["A. Le développement mental est normal.", "B. La stérilité est fréquente.", "C. La fécondité spontanée est possible.", "D. La fonction sexuelle est normale.", "E. Le spermogramme est normal."], ans: ["A","B","D"] },
+          { q: "(Cas clinique – homme 28 ans, infertilité) Les signes cliniques orientant vers le syndrome de Klinefelter sont :", opts: ["A. Une musculature peu développée,", "B. Une pilosité pubienne triangulaire,", "C. Une pilosité axillaire développée,", "D. Un aspect longiligne,", "E. Un développement normal de la verge."], ans: ["A","B","D","E"] },
+          { q: "Les diagnostics différentiels du syndrome de Klinefelter sont :", opts: ["A. Une tumeur hypophysaire,", "B. L'insuffisance gonadique périphérique,", "C. Le syndrome XYY,", "D. Le male XX,", "E. Le syndrome de Kallman de Morsier."], ans: ["A","B","D","E"] },
+          { q: "Dans le syndrome de Klinefelter :", opts: ["A. Le développement mental est anormal.", "B. Le développement de la verge est normal.", "C. L'aspect est gynoïde.", "D. La fécondité spontanée est impossible.", "E. Le caryotype sur lignée lymphocytaire prédit l'état de la spermatogenèse."], ans: ["B","C","D"] },
+          { q: "Dans le syndrome de Klinefelter, quelles sont les propositions justes ?", opts: ["A. La stérilité est fréquente.", "B. La fécondité spontanée est possible.", "C. La fonction sexuelle est normale.", "D. L'aspect morphologique est gynoïde.", "E. Le développement mental est normal."], ans: ["A","C","D","E"] },
+          { q: "Dans le syndrome de Klinefelter :", opts: ["A. La formule chromosomique classique est 47,XYY.", "B. La gynécomastie est bilatérale et indolore.", "C. Les testicules sont fermes et indolores.", "D. La fécondité spontanée est possible.", "E. Le retard mental est sévère."], ans: ["B","C"] },
+          { q: "Les anomalies génitales rencontrées dans le syndrome de Klinefelter sont :", opts: ["A. Une pilosité pubienne losangique.", "B. Une cryptorchidie.", "C. Une hypoplasie de la verge.", "D. Un hypospadias.", "E. Un scrotum de petite taille."], ans: ["B","C","D","E"] },
+          { q: "Dans le syndrome de Klinefelter, le caryotype sur lignée lymphocytaire permet de :", opts: ["A. Confirmer le diagnostic.", "B. Eliminer les anomalies des autosomes.", "C. Prédire la constitution chromosomique testiculaire.", "D. Prédire la présence de spermatogenèse.", "E. Améliorer la prise en charge."], ans: ["A","B","E"] },
+          { q: "Le syndrome de Klinefelter se caractérise par :", opts: ["A. Une musculature peu développée.", "B. Un aspect gynoïde.", "C. Une fécondité spontanée.", "D. Une morphologie longiligne.", "E. Un développement mental normal."], ans: ["A","B","D","E"] },
+          { q: "A propos du syndrome de Klinefelter, quelles sont les propositions FAUSSES ?", opts: ["A. L'X supplémentaire est d'origine maternelle dans 50% des cas.", "B. La formule chromosomique classique est 47 XYY.", "C. La gynécomastie fait partie du tableau clinique.", "D. Il inclut un retard mental sévère.", "E. La descendance d'un patient atteint du syndrome de Klinefelter est saine."], ans: ["B","D"] },
+          { q: "Le syndrome de Klinefelter se caractérise par :", opts: ["A. Une stérilité.", "B. Une fécondité spontanée.", "C. Une fonction sexuelle normale.", "D. Une morphologie longiligne.", "E. Un développement mental normal."], ans: ["A","C","D","E"] },
+          { q: "Le syndrome de Klinefelter se définit par la présence de plusieurs :", opts: ["A. Chromosomes Y supplémentaires chez des sujets de phénotype masculin.", "B. Chromosomes X supplémentaires chez des sujets de phénotype féminin.", "C. Chromosomes X supplémentaires chez des sujets de phénotype masculin.", "D. Chromosomes Y supplémentaires chez des sujets de phénotype féminin.", "E. Chromosomes Y supplémentaires chez des sujets avec ambiguïté sexuelle."], ans: ["C"] },
+          { q: "Dans le syndrome de Klinefelter :", opts: ["A. La fréquence de son apparition augmente avec l'âge maternel.", "B. La fréquence de son apparition augmente avec l'âge paternel.", "C. La stérilité est constante.", "D. La fécondité est normale.", "E. La fonction sexuelle est normale."], ans: ["A","C","E"] },
+          { q: "Le tableau clinique du syndrome de Klinefelter comporte :", opts: ["A. Un retard mental.", "B. Une pilosité axillaire bien développée.", "C. Une morphologie longiligne avec aspect gynoïde.", "D. Une musculature bien développée.", "E. Des petits testicules fermes et indolores."], ans: ["C","E"] },
+          { q: "Le male XX :", opts: ["A. Est un garçon avec caryotype 46,XX.", "B. Est une fille avec caryotype 46,XX.", "C. Est une fille avec caryotype 46,XY.", "D. A un phénotype de Klinefelter.", "E. A un phénotype de Turner."], ans: ["A","D"] },
+          { q: "Le diagnostic du syndrome du male XX nécessite :", opts: ["A. L'étude du gène SRY.", "B. L'étude du gène SRX.", "C. L'étude du gène FMR1.", "D. L'étude du gène FANCA.", "E. Aucune réponse n'est juste."], ans: ["A"] },
+          { q: "(Cas clinique – garçon 17 ans, cryptorchidie avec hypospadias) Quels sont les autres signes cliniques à rechercher ?", opts: ["A. Une musculature peu développée.", "B. Une gynécomastie.", "C. Une pilosité axillaire bien développée.", "D. Un aspect androïde.", "E. Des petits testicules fermes et indolores."], ans: ["A","B","E"] },
+          { q: "Quels sont les examens complémentaires à réaliser ?", opts: ["A. Une échographie testiculaire.", "B. Dosage de la LH et de la FSH dans le sang.", "C. Dosage de la LH et de la FSH dans les urines.", "D. Dosage de la testostérone.", "E. Un caryotype."], ans: ["A","B","D","E"] },
+          { q: "La prise en charge thérapeutique de ce patient sera :", opts: ["A. L'abstention.", "B. Un traitement hormonal par la testostérone.", "C. Un traitement hormonal par les oestro-progestatifs.", "D. Un traitement hormonal par l'hormone de croissance.", "E. Un don de sperme."], ans: ["B"] },
+          { q: "Le Male XX :", opts: ["A. Est un garçon avec caryotype 46,XX.", "B. Est une fille avec caryotype 46,XX.", "C. A un phénotype du syndrome de Klinefelter.", "D. A un phénotype du syndrome de Turner.", "E. Est dû à une translocation du gène SRY."], ans: ["A","C","E"] },
+          { q: "A propos du syndrome de Klinefelter, quelles sont les propositions justes ?", opts: ["A. L'X supplémentaire est d'origine maternelle dans 50% des cas.", "B. La formule chromosomique classique est 47,XYY.", "C. La gynécomastie fait partie du tableau clinique.", "D. La grande variation phénotypique.", "E. Sa fréquence augmente avec l'âge paternel."], ans: ["A","C"] },
+          { q: "Toutes ces anomalies sont observées dans le syndrome de Klinefelter pré-pubertaire SAUF une, laquelle ?", opts: ["A. La cryptorchidie.", "B. L'hypoplasie de la verge.", "C. L'hypospadias.", "D. L'hyperplasie de la verge.", "E. Le retard staturo-pondéral."], ans: ["D"] },
+          { q: "Le syndrome du male XX correspond à un sujet :", opts: ["A. Masculin avec caryotype 46,XX.", "B. Masculin avec caryotype 47,XXY.", "C. Féminin avec caryotype 47,XXY.", "D. Féminin avec caryotype 47,XXX.", "E. Masculin de grande taille avec hyperpilosité."], ans: ["A"] },
+          { q: "Le syndrome de Klinefelter se définit par la présence de plusieurs :", opts: ["A. Chromosomes X supplémentaires chez des sujets de phénotype masculin.", "B. Chromosomes Y supplémentaires chez des sujets de phénotype masculin.", "C. Chromosomes X supplémentaires chez des sujets de phénotype féminin.", "D. Chromosomes Y supplémentaires chez des sujets de phénotype féminin.", "E. Chromosomes Y supplémentaires chez des sujets avec ambiguïté sexuelle."], ans: ["A"] },
+          { q: "Le tableau clinique du syndrome de Klinefelter comporte :", opts: ["A. Un retard mental.", "B. Une pilosité axillaire bien développée.", "C. Une morphologie longiligne avec aspect gynoïde.", "D. Une musculature peu développée.", "E. Des petits testicules fermes et indolores."], ans: ["C","D","E"] },
+          { q: "Le caryotype 48,XXY correspond à un sujet :", opts: ["A. Masculin avec phénotype normal.", "B. Masculin avec aspect androïde.", "C. Féminin de grande taille avec hyperpilosité.", "D. Masculin de grande taille avec hyperpilosité.", "E. Masculin avec aspect gynoïde."], ans: ["E"] },
+          { q: "A propos du syndrome de Klinefelter, quelles sont les propositions justes ?", opts: ["A. L'X supplémentaire est d'origine maternelle dans 50% des cas.", "B. La formule chromosomique classique est 47,XYY.", "C. La gynécomastie fait partie du tableau clinique.", "D. Il inclut un retard mental sévère.", "E. La descendance d'un patient atteint du syndrome de Klinefelter est saine."], ans: ["A","C"] },
+      ]},
+      { id: "williams", label: "Williams-Beuren", accent: "#ea580c", light: "#ffedd5", border: "#fdba74", questions: [
+          { q: "Dans le syndrome de Williams :", opts: ["A. Le comportement amical est caractéristique.", "B. L'hypercalcémie néonatale idiopathique disparaît spontanément après 2 ans.", "C. L'agressivité envers l'entourage est fréquente.", "D. La lèvre inférieure est large et éversée.", "E. Le langage est absent."], ans: ["A","B","D"] },
+          { q: "La dysmorphie faciale du syndrome de Williams et Beuren peut regrouper :", opts: ["A. Une hypoplasie malaire,", "B. Des traits grossiers,", "C. Des joues pleines,", "D. Une microstomie,", "E. Un épicanthus."], ans: ["A","C","E"] },
+          { q: "Le syndrome de Williams et Beuren associe :", opts: ["A. Une déficience intellectuelle profonde.", "B. Une perte du tissu sous-cutané.", "C. Un comportement amical.", "D. Un hypogénitalisme.", "E. Une épilepsie."], ans: ["C"] },
+          { q: "Quels sont les examens paracliniques à demander dans le syndrome de Williams et Beuren ?", opts: ["A. Echographie cardiaque.", "B. Echographie rénale.", "C. Cathétérisme cardiaque.", "D. Dosage de la glycémie.", "E. Dosage de la calcémie."], ans: ["A","B","E"] },
+          { q: "Les troubles comportementaux du syndrome de Williams regroupent :", opts: ["A. Une grande anxiété.", "B. Une hyperphagie.", "C. Une facilité de communication.", "D. Une difficulté d'adaptation sociale.", "E. Un déficit des compétences visio-spatiales."], ans: ["A","C","E"] },
+          { q: "La dysmorphie faciale du syndrome de Williams et Beuren regroupe :", opts: ["A. Une hypoplasie malaire.", "B. Un œdème périorbitaire.", "C. Un épicanthus.", "D. Des joues pleines.", "E. Une microstomie."], ans: ["A","B","C","D"] },
+          { q: "Quel syndrome microdélétionnel est associé à une bonne mémoire auditive ?", opts: ["A. Le syndrome d'Angelman.", "B. Le syndrome de Prader-Willi.", "C. Le syndrome de l'X fragile.", "D. L'Anémie de Fanconi.", "E. Le syndrome de Williams."], ans: ["E"] },
+          { q: "(Cas clinique – fille 2 ans et demi) A l'anamnèse, la maman rapporte quelques signes cliniques depuis la naissance, lesquels ?", opts: ["A. Une hypotonie.", "B. Une mauvaise prise pondérale.", "C. Des pleurs fréquents.", "D. Des troubles du sommeil.", "E. Une hernie inguinale."], ans: ["B","C","D","E"] },
+          { q: "Quels sont les signes de dysmorphie faciale qui peuvent être retrouvés ?", opts: ["A. Une microstomie.", "B. Un épicanthus.", "C. Un iris stellaire.", "D. Une lèvre inférieure large et éversée.", "E. Une hypoplasie malaire."], ans: ["B","C","D","E"] },
+          { q: "Cette fille présente aussi des troubles du comportement, lesquels ?", opts: ["A. Une hypersensibilité aux bruits.", "B. Une hyperphagie.", "C. Des crises brutales de colère.", "D. Des sourires fréquents.", "E. Une grande anxiété."], ans: ["A","D","E"] },
+          { q: "Des examens complémentaires doivent être demandés, lesquels ?", opts: ["A. Un cathétérisme cardiaque.", "B. Une échographie cardiaque.", "C. Une échographie rénale.", "D. Une échographie vasculaire.", "E. Un dosage des hormones thyroïdiennes."], ans: ["B","C","D","E"] },
+          { q: "Le bilan paraclinique n'a montré aucune anomalie. Pour confirmer votre diagnostic, vous devez réaliser :", opts: ["A. Un caryotype standard.", "B. Une FISH de la région 15q11.23.", "C. Etude du transcrit SNRPN.", "D. Une étude moléculaire.", "E. Une FISH de la région 7q11.23."], ans: ["E"] },
+          { q: "La surveillance et le suivi de cet enfant doit comporter :", opts: ["A. La réalisation d'un cathétérisme cardiaque.", "B. Une prise régulière de sa pression artérielle.", "C. Un régime pauvre en calcium.", "D. La réalisation d'échographie cardiaque.", "E. Des soins buccodentaires."], ans: ["B","C","D","E"] },
+          { q: "Le syndrome de Williams et Beuren se manifeste en période post-natale par :", opts: ["A. Une néphrocalcinose.", "B. Une hypercalcémie idiopathique.", "C. Une sténose aortique supravalvulaire.", "D. Une hyperglycémie.", "E. Un œdème des membres inférieurs."], ans: ["A","B","C"] },
+          { q: "Dans le syndrome de Williams et Beuren, des examens complémentaires doivent être demandés, lesquels ?", opts: ["A. Une échographie cardiaque.", "B. Un cathétérisme cardiaque.", "C. Une échographie rénale.", "D. Une échographie vasculaire.", "E. Un dosage des hormones thyroïdiennes."], ans: ["A","C","D","E"] },
+          { q: "(Cas clinique – enfant féminin 7 ans) Quels sont les signes cliniques qui peuvent être retrouvés ?", opts: ["A. L'hypoplasie malaire.", "B. Un oedème périorbitaire.", "C. Une lèvre inférieure éversée.", "D. Des oreilles faunesques.", "E. Une nuque aplatie avec excès de peau."], ans: ["A","B","C"] },
+          { q: "Les examens complémentaires à réaliser chez cet enfant sont :", opts: ["A. Echographie cardiaque.", "B. Echographie rénale.", "C. Cathétérisme cardiaque.", "D. Dosage de la glycémie.", "E. Bilan thyroïdien."], ans: ["A","B","E"] },
+          { q: "La maman rapporte des troubles du comportement relatifs à ce syndrome, lesquels ?", opts: ["A. La facilité à établir des contacts.", "B. L'anxiété.", "C. Le déficit des compétences visio-spatiales.", "D. La polyphagie.", "E. Les mouvements répétitifs."], ans: ["A","B","C"] },
+          { q: "L'anomalie chromosomique responsable de ce syndrome est :", opts: ["A. Microdélétion 7q.", "B. Microduplication 7q.", "C. Microdélétion 15q.", "D. 47XX+7.", "E. 45XX-7."], ans: ["A"] },
+          { q: "Le syndrome de Williams et Beuren peut se manifester en période néonatale par :", opts: ["A. Des problèmes d'alimentation.", "B. Une hypercalcémie idiopathique.", "C. Une hypotonie.", "D. Une hyperglycémie.", "E. Un œdème des membres inférieurs."], ans: ["A","B"] },
+          { q: "(Cas clinique – fille 8 ans) Quels sont les signes dysmorphiques qui peuvent être retrouvés ?", opts: ["A. Une lèvre supérieure en chapeau de gendarme.", "B. Un hypertélorisme.", "C. Une hypoplasie malaire.", "D. Un œdème périorbitaire.", "E. Lèvre inférieure large et éversée."], ans: ["C","D","E"] },
+          { q: "Cette fille présente aussi des troubles du comportement, lesquels ?", opts: ["A. Une hyperphagie.", "B. Des crises brutales de colère.", "C. Des sourires fréquents.", "D. Une grande anxiété.", "E. Une bonne mémoire auditive."], ans: ["C","D","E"] },
+          { q: "Des examens complémentaires doivent être demandés, lesquels ?", opts: ["A. Un cathétérisme cardiaque.", "B. Une échographie cardiaque.", "C. Une échographie rénale.", "D. Une échographie vasculaire.", "E. Un dosage des hormones thyroïdiennes."], ans: ["B","C","D","E"] },
+          { q: "La dysmorphie faciale retrouvée dans le syndrome de Williams et Beuren post-natal :", opts: ["A. Œdème périorbitaire.", "B. Hyperplasie malaire.", "C. Iris stellaire.", "D. Microstomie.", "E. Lèvre inférieure large et éversée."], ans: ["A","C","E"] },
+          { q: "Les examens complémentaires ci-dessous peuvent être réalisés dans le syndrome de Williams et Beuren SAUF un, lequel ?", opts: ["A. L'échographie cardiaque.", "B. Le cathétérisme cardiaque.", "C. L'échographie vasculaire.", "D. L'échographie rénale.", "E. Dosage des hormones thyroïdiennes."], ans: ["B"] },
+          { q: "(Cas clinique – nourrisson Amina, 3 mois) A cette étape, le diagnostic le plus probable est :", opts: ["A. Le syndrome de Prader-Willi.", "B. La trisomie 21.", "C. La trisomie 18.", "D. Le syndrome de Turner.", "E. Le syndrome de Williams et Beuren."], ans: ["E"] },
+          { q: "Pour confirmer le diagnostic, il faut réaliser :", opts: ["A. Un caryotype standard.", "B. Une échographie abdominale.", "C. Une numération formule sanguine (NFS).", "D. Une TDM cérébrale.", "E. Un électroencéphalogramme (EEG)."], ans: ["A","B"] },
+          { q: "Le bilan paraclinique n'a montré aucune anomalie. Pour confirmer votre diagnostic, vous devez réaliser :", opts: ["A. Une fibroscopie digestive haute.", "B. Une rectoscopie.", "C. Etude du gène FANCA.", "D. Une FISH.", "E. Un ionogramme."], ans: ["D"] },
+          { q: "La surveillance et le suivi du nourrisson Amina doit comporter :", opts: ["A. La réalisation d'un cathétérisme cardiaque.", "B. Une prise régulière de sa pression artérielle.", "C. Un régime pauvre en calcium.", "D. La réalisation d'échographie cardiaque.", "E. Des soins buccodentaires."], ans: ["B","C","D","E"] },
+          { q: "Les signes cliniques retrouvés dans le syndrome de Williams et Beuren dans la période post-natale sont :", opts: ["A. Vomissements répétitifs.", "B. Hypoplasie malaire.", "C. Hypocalcémie.", "D. Sténose aortique supravalvulaire.", "E. Grande anxiété."], ans: ["A","B","D","E"] },
+          { q: "Les signes cliniques retrouvés dans le syndrome de Williams et Beuren dans la période néonatale sont :", opts: ["A. Vomissements répétitifs.", "B. Diarrhée.", "C. Troubles du sommeil.", "D. Hypotonie.", "E. Hypercalcémie idiopathique."], ans: ["A","C","E"] },
+          { q: "Les examens complémentaires à réaliser lors du syndrome de Williams et Beuren :", opts: ["A. Echographie cardiaque.", "B. Echographie rénale.", "C. Cathétérisme cardiaque.", "D. Dosage de la glycémie.", "E. Dosage de T3-T4-TSH."], ans: ["A","B","E"] },
+      ]},
+      { id: "prader", label: "Prader-Willi", accent: "#0d9488", light: "#ccfbf1", border: "#5eead4", questions: [
+          { q: "Dans le syndrome de Prader-Willi :", opts: ["A. Les crises de colère sont brutales et incontrôlables.", "B. L'hypogonadisme est fréquent.", "C. L'hypotonie néonatale est absente.", "D. Le retard psychomoteur est absent.", "E. Le retard statural est fréquent."], ans: ["A","B","E"] },
+          { q: "Les troubles psychologiques et comportementaux du syndrome de Prader-Willi sont :", opts: ["A. Les crises brutales de colère.", "B. Le déficit des compétences visio-spatiales.", "C. Le manque de réserve vis à vis des étrangers.", "D. Les violences physiques contre l'entourage.", "E. L'hyperphagie."], ans: ["A","D","E"] },
+          { q: "Chez le nourrisson, le syndrome de Prader-Willi peut se manifester par :", opts: ["A. Un déficit de la succion-déglutition.", "B. Un trouble du sommeil.", "C. Une hypotonie.", "D. Une cryptorchidie.", "E. Une constipation."], ans: ["A","C","D"] },
+          { q: "Le syndrome de Prader-Willi peut être dû à :", opts: ["A. Une microdélétion du chromosome 15.", "B. Une microdélétion du chromosome 7.", "C. Une disomie uniparentale maternelle.", "D. Une disomie uniparentale paternelle.", "E. Un défaut de la méthylation du centre de l'empreinte."], ans: ["A","C","E"] },
+          { q: "Dans le syndrome de Prader-Willi, la microdélétion est :", opts: ["A. Décelable par un caryotype standard.", "B. Décelable par la technique cytogénétique moléculaire (FISH).", "C. De taille inférieure à de SMb.", "D. Due à un crossing over inégal.", "E. Responsable de 70% des cas de ce syndrome."], ans: ["B","C","D","E"] },
+          { q: "La confirmation diagnostique du syndrome de Prader-Willi nécessite la réalisation de :", opts: ["A. Caryotype standard.", "B. Caryotype avec utilisation d'agents pontants.", "C. Etude moléculaire du transcrit SNRPN.", "D. FISH.", "E. Etude moléculaire du gène FMR1."], ans: ["C","D"] },
+          { q: "Le syndrome de Prader-Willi peut être dû à :", opts: ["A. Une microdélétion de la copie maternelle.", "B. Une disomie uniparentale paternelle.", "C. Une disomie uniparentale maternelle.", "D. Un défaut de la méthylation.", "E. Une mutation du gène UBE3A."], ans: ["C","D"] },
+          { q: "(Cas clinique – garçon 8 ans, déficience intellectuelle, obésité, yeux en amandes, front étroit, bouche en chapeau de gendarme) Quel est le diagnostic le plus probable ?", opts: ["A. Le syndrome d'Angelman.", "B. Le syndrome de Prader-Willi.", "C. Le syndrome de Williams.", "D. Le syndrome de l'X fragile.", "E. Le syndrome de Down."], ans: ["B"] },
+          { q: "Quels autres signes cliniques peuvent faire partie de ce syndrome ?", opts: ["A. Une cryptorchidie.", "B. Une petite verge.", "C. Une microcéphalie.", "D. Une hypertonie des membres.", "E. Des petites extrémités."], ans: ["A","B","E"] },
+          { q: "Pour confirmer ce diagnostic, quel examen paraclinique doit-on réaliser ?", opts: ["A. Un caryotype standard.", "B. Un caryotype avec utilisation d'agents pontants.", "C. Une étude moléculaire du transcrit SNRPN.", "D. Une FISH.", "E. Une étude moléculaire du gène FMRI."], ans: ["C"] },
+          { q: "Ce syndrome peut être dû à :", opts: ["A. Une microdélétion.", "B. Une disomie uniparentale maternelle.", "C. Une disomie uniparentale paternelle.", "D. Un défaut de la méthylation.", "E. Une translocation robertsonienne."], ans: ["A","B","D"] },
+          { q: "Le syndrome de Prader-Willi peut se manifester par :", opts: ["A. Un micropénis.", "B. Une microcéphalie.", "C. Une obésité.", "D. Une hyperphagie.", "E. Une épilepsie."], ans: ["A","C","D"] },
+          { q: "(Cas clinique – garçon 6 ans, fratrie de 3, mariage consanguin) Quel est le diagnostic le plus probable ?", opts: ["A. Syndrome de Turner.", "B. Trisomie 21.", "C. Syndrome de l'X fragile.", "D. Syndrome de Prader-Willi.", "E. Anémie de Fanconi."], ans: ["D"] },
+          { q: "Ce syndrome est associé à des troubles du comportement, lesquels ?", opts: ["A. Les crises de colère.", "B. L'anxiété.", "C. Le déficit des compétences visio-spatiales.", "D. La polyphagie.", "E. Les mouvements répétitifs."], ans: ["A","D"] },
+          { q: "Pour confirmer votre diagnostic, vous allez prescrire :", opts: ["A. Une étude du transcrit SNRPN.", "B. Une FISH.", "C. Un caryotype standard.", "D. Une étude du gène FMRI.", "E. Une étude du gène UBE3A."], ans: ["A"] },
+          { q: "La prise en charge de cet enfant comprendra :", opts: ["A. Une hormonothérapie substitutive.", "B. Une diététique contre l'obésité.", "C. L'abstention.", "D. Un traitement anti-épileptique.", "E. Un régime pauvre en protéines."], ans: ["A","B"] },
+          { q: "Dans le syndrome de Prader-Willi, quelles sont les propositions FAUSSES ?", opts: ["A. Il peut être dû à une mutation dans le gène UBE3A.", "B. Les gènes manquants sont d'origine paternelle.", "C. Les gènes manquants sont d'origine maternelle.", "D. Il peut être dû à une mutation du centre de l'empreinte.", "E. Il peut être dû à une microdélétion."], ans: ["A","C"] },
+          { q: "Dans le syndrome de Prader-Willi, quelles sont les propositions JUSTES ?", opts: ["A. Les gènes manquants sont d'origine paternelle.", "B. Les gènes manquants sont d'origine maternelle.", "C. Peut être dû à une mutation du centre de l'empreinte.", "D. Peut être dû à une mutation dans le gène UBE3A.", "E. Peut être dû à une microdélétion."], ans: ["A","C"] },
+          { q: "Le phénotype comportemental du syndrome de Prader-Willi chez un enfant de 8 ans comporte :", opts: ["A. Des crises de pleurs facilement provoqués.", "B. Une absence du langage.", "C. Des sourires fréquents.", "D. Une déficience mentale.", "E. Une hyperphagie."], ans: ["A","D","E"] },
+          { q: "Les anomalies génétiques responsables du syndrome de Prader-Willi sont :", opts: ["A. Une disomie uniparentale maternelle.", "B. Une disomie uniparentale paternelle.", "C. Une mutation du centre de l'empreinte.", "D. Une microdélétion du gène SNRPN paternel.", "E. Une microdélétion du gène SNRPN maternel."], ans: ["A","C","D"] },
+          { q: "Dans le syndrome de Prader-Willi, quelles sont les propositions justes ?", opts: ["A. Les gènes manquants sont d'origine paternelle.", "B. Les gènes manquants sont d'origine maternelle.", "C. Peut être dû à une mutation du centre de l'empreinte.", "D. Peut être dû à une mutation dans le gène UBEJA.", "E. Peut être dû à une microdélétion."], ans: ["A","C","E"] },
+          { q: "Quels sont les mécanismes génétiques impliqués dans la survenue du syndrome de Prader-Willi ?", opts: ["A. Une disomie uniparentale maternelle dans 25% des cas.", "B. Une mutation du centre de l'empreinte dans 5% des cas.", "C. Mutation dans le gène UBE3A dans 20% des cas.", "D. Une microdélétion du gène SNRPN paternel dans 70% des cas.", "E. Une disomie uniparentale paternelle dans 25% des cas."], ans: ["A","B"] },
+      ]},
+      { id: "turner", label: "Turner", accent: "#db2777", light: "#fce7f3", border: "#f472b6", questions: [
+          { q: "Dans le syndrome de Turner, les examens para-cliniques à demander chez une fillette de 8 ans sont :", opts: ["A. Une échographie rénale.", "B. Le dosage de la LH et de la FSH dans le sang.", "C. Le dosage de la LH et de la FSH dans les urines.", "D. Le dosage de l'oestradiol.", "E. La recherche du gène SRY."], ans: ["A","B","E"] },
+          { q: "(Cas clinique – fille 15 ans, retard pubertaire) A l'examen clinique, les signes de dysmorphie faciale ci-dessous peuvent être présents SAUF un, lequel ?", opts: ["A. Une nuque aplatie avec excès de peau.", "B. Une bouche en chapeau de gendarme.", "C. Un épicanthus.", "D. Un ptosis.", "E. Un microrétrognathisme."], ans: ["B"] },
+          { q: "Les malformations qui peuvent être retrouvées sont :", opts: ["A. Un cubitus valgus,", "B. Une coarctation de l'aorte.", "C. Une hyperplasie de l'utérus.", "D. Un rein en fer à cheval.", "E. Une brachymétacarpie du 4ème et 5ème doigts."], ans: ["A","B","D","E"] },
+          { q: "Les examens complémentaires à réaliser dans le syndrome de Turner chez une fillette de 7 ans sont :", opts: ["A. Dosage de la LH et FSH.", "B. Radios de squelette.", "C. Dosage de l'oestradiol.", "D. Echographie rénale.", "E. Echographie cardiaque."], ans: ["B","D","E"] },
+          { q: "Au Maroc, la prise en charge du syndrome de Turner est basée sur :", opts: ["A. Le traitement par l'hormone de croissance.", "B. Le don d'ovocytes.", "C. Le traitement oestro-progestatif.", "D. L'ablation systématique des gonades.", "E. La plastie des organes génitaux externes."], ans: ["A","C"] },
+          { q: "Quels sont les formules chromosomiques rencontrées dans le syndrome de Turner ?", opts: ["A. 46,X,i(Xq).", "B. 45,X/46,XX/47,XXX.", "C. 45,X/46,XY/47,XXY.", "D. 46,X,del(Xp).", "E. 47,XYY."], ans: ["A","B","C","D"] },
+          { q: "Dans le syndrome de Turner sa mosaïque :", opts: ["A. La puberté est normale.", "B. La fertilité est possible.", "C. Le pronostic est mauvais.", "D. La ménopause précoce est fréquente.", "E. Le risque de gonadoblastome est élevé."], ans: ["A","B","D"] },
+          { q: "A propos du syndrome de Turner, quelle est la formule chromosomique associée à un retard mental ?", opts: ["A. 46,X,del(Xp).", "B. 46,X,del(Xq).", "C. 46,X,r(X).", "D. 45,X/46,XY.", "E. 46,X,i(Xq)."], ans: ["C"] },
+          { q: "Dans le syndrome de Turner, quelle est la formule chromosomique nécessitant une gonadectomie ?", opts: ["A. 46,X,del(Xp).", "B. 46,X,del(Xq).", "C. 45,X/46,XX/47,XXX.", "D. 45,X/46,XY.", "E. 46,X,i(Xq)."], ans: ["D"] },
+          { q: "Le syndrome de Turner est :", opts: ["A. La seule monosomie complète viable.", "B. Influencé par l'âge maternel.", "C. Dû à la perte d'un chromosome X.", "D. Caractérisé par une aménorrhée primaire.", "E. Caractérisé par des malformations rénales."], ans: ["A","C","D","E"] },
+          { q: "Quels sont les examens paracliniques à demander chez une fillette de 7 ans ayant le syndrome de Turner ?", opts: ["A. Une radiologie du squelette.", "B. Une échographie rénale.", "C. Une échographie cardiaque.", "D. Un examen ophtalmologique.", "E. Le dosage de la LH et de la FSH."], ans: ["A","B","C","D"] },
+          { q: "Dans le syndrome de Turner, quelles sont les formules chromosomiques nécessitant une gonadectomie ?", opts: ["A. 45X/46XY.", "B. 46Xdel(Xp).", "C. 46Xdel(Xq).", "D. 45X/46XX/47XXX.", "E. 46Xi(Xq)."], ans: ["A"] },
+          { q: "A propos du syndrome de Turner, quelle est la proposition FAUSSE ?", opts: ["A. C'est la seule monosomie complète viable.", "B. Il n'y a pas d'influence de l'âge maternel ou paternel.", "C. La fertilité est normale.", "D. Le phénotype est féminin associé à un retard pubertaire.", "E. La formule chromosomique la plus fréquente est 45X."], ans: ["C"] },
+          { q: "Dans le syndrome de Turner, la triade diagnostique regroupe :", opts: ["A. Une petite taille.", "B. Une déficience intellectuelle.", "C. Un ptérigium coli.", "D. Une hyperphagie.", "E. Une aménorrhée primaire."], ans: ["A","C","E"] },
+          { q: "Dans le syndrome de Turner, quelle est la formule chromosomique qui correspond à une mosaïque ?", opts: ["A. 46,X,del(Xp).", "B. 46,X,r(X).", "C. 45,X.", "D. 46,X,i(Xq).", "E. 45X/46XY."], ans: ["E"] },
+          { q: "L'inactivation du chromosome X s'accomplit :", opts: ["A. A un stade précoce de l'embryogenèse.", "B. A la naissance.", "C. Au hasard.", "D. Sur les allèles d'un seul chromosome X.", "E. Sur les chromosomes X d'origine maternelle."], ans: ["A","C"] },
+          { q: "Dans le syndrome de Turner avec un chromosome X en anneau :", opts: ["A. La fertilité est préservée.", "B. Le retard mental est constant.", "C. Le retard statural est constant.", "D. Les malformations squelettiques sont absentes.", "E. Le risque de gonadoblastome est élevé."], ans: ["B"] },
+          { q: "Dans le syndrome de Turner, quelle est la formule chromosomique qui s'accompagne d'un retard mental ?", opts: ["A. 46,X,del(Xp).", "B. 46,X,r(X).", "C. 45X/46XX/47XXX.", "D. 46,X,i(Xq).", "E. 45X/46XY."], ans: ["B"] },
+          { q: "(Cas clinique – patiente 40 ans, enceinte 24 SA, hygroma fœtal + RCIU) Quels sont les diagnostics à évoquer ?", opts: ["A. La trisomie 21.", "B. La trisomie 18.", "C. Le syndrome de Prader-Willi.", "D. Le syndrome de Klinefelter.", "E. Le syndrome de Turner."], ans: ["B","E"] },
+          { q: "Pour confirmer le diagnostic RAPIDEMENT, quel examen allez-vous demander ?", opts: ["A. Un caryotype suivi d'une FISH.", "B. Une FISH suivie d'un caryotype.", "C. Un caryotype avec agent pontant.", "D. Uniquement un caryotype.", "E. L'abstention de tout examen."], ans: ["B"] },
+          { q: "A ce stade, quel est le diagnostic le plus probable (bébé féminin, replis cutanés au cou) ?", opts: ["A. Trisomie 21.", "B. Trisomie 18.", "C. Syndrome de Prader-Willi.", "D. Syndrome de Klinefelter.", "E. Syndrome de Turner."], ans: ["E"] },
+          { q: "Quel autre examen clinique manque à votre consultation à la maternité ?", opts: ["A. Examen cardiovasculaire.", "B. Examen des aires ganglionnaires.", "C. Examen cutané.", "D. Examen ORL.", "E. Examen ophtalmologique."], ans: ["A"] },
+          { q: "Un caryotype a montré la formule : 45X/46XY. A long terme, quel est le risque pour ce nouveau-né ?", opts: ["A. Le retard mental.", "B. Le développement d'un gonadoblastome.", "C. Le développement d'une leucémie.", "D. Les fausses couches à répétitions.", "E. Aucun risque."], ans: ["B"] },
+          { q: "Dans le syndrome de Turner, quelle est la formule chromosomique nécessitant une gonadectomie ?", opts: ["A. 46Xdel(Xp).", "B. 46Xr(X).", "C. 45X/46XX/47XXX.", "D. 46Xj(Xq).", "E. 45X/46XY."], ans: ["E"] },
+          { q: "Quels sont les signes cliniques retrouvés dans le syndrome de Turner néonatal ?", opts: ["A. Le lymphoedème.", "B. La petite taille.", "C. L'aménorrhée.", "D. L'hypotrophie.", "E. Le pterygium colli."], ans: ["A","B","E"] },
+          { q: "Dans le syndrome de Turner, quels sont les signes cliniques constituants la triade diagnostique ?", opts: ["A. Le lymphoedème.", "B. L'aménorrhée primaire.", "C. La petite taille.", "D. Le ptérigium coli.", "E. Le retard mental."], ans: ["B","C","D"] },
+          { q: "Parmi les formules chromosomiques ci-dessous, lesquelles correspondent à un syndrome de Turner ?", opts: ["A. 46Xdel(Xp).", "B. 45X0.", "C. 45X/46XX.", "D. 46Xr(X).", "E. 47XXX/46XX."], ans: ["A","B","C","D"] },
+          { q: "Dans le syndrome de Turner, quelle est la formule chromosomique nécessitant une gonadectomie ?", opts: ["A. 46Xdel(Xp).", "B. 46Xdel(Xq).", "C. 45X/46XX/47XXX.", "D. 45X/46XY.", "E. 46Xi(Xq)."], ans: ["D"] },
+          { q: "A propos du syndrome de Turner en période néonatale, quelles sont les propositions JUSTES ?", opts: ["A. L'apparition du syndrome de Turner en période néonatale est liée à un âge paternel avancé.", "B. Le syndrome de Turner en période néonatale est caractérisé par le syndrome de Bonnevie-Ullrich.", "C. Le chromosome X perdu est le plus souvent d'origine maternelle.", "D. Le chromosome X perdu est le plus souvent d'origine paternelle.", "E. La mise en évidence d'une formule 45X/46XY nécessite une gonadectomie."], ans: ["B","E"] },
+          { q: "Toutes ces anomalies sont observées dans le syndrome de Turner néonatal SAUF une, laquelle ?", opts: ["A. Lymphoedème.", "B. Petite taille.", "C. Hypotonie.", "D. Hypotrophie.", "E. Pterygium colli."], ans: ["C"] },
+          { q: "Dans le syndrome de Turner néonatal, quelle anomalie viscérale faut-il rechercher en premier ?", opts: ["A. Rein en fer à cheval.", "B. Rein pelvien.", "C. Hypoplasie des ovaires.", "D. Diastasis radio-lunaire.", "E. Coarctation de l'aorte."], ans: ["E"] },
+          { q: "Dans le syndrome de Turner, quels sont les signes cliniques constituants la triade diagnostique ?", opts: ["A. Aménorrhée primaire.", "B. Petite taille.", "C. Ptérigium coli.", "D. Retard mental.", "E. Epicanthus."], ans: ["A","B","C"] },
+          { q: "Dans le syndrome de Turner, quelle est la formule chromosomique qui s'accompagne de retard mental ?", opts: ["A. 46Xdel(Xp).", "B. 46XI(Xq).", "C. 46Xdel(Xq).", "D. 45X/46XX/47XXX.", "E. 46X r(X)."], ans: ["E"] },
+          { q: "L'inactivation de l'X est un phénomène :", opts: ["A. Pathologique.", "B. Physiologique.", "C. Aléatoire.", "D. Embryologique.", "E. Non transmissible."], ans: ["B","D","E"] },
+          { q: "Dans le syndrome de Turner, quelle est la formule chromosomique qui s'accompagne de retard mental ?", opts: ["A. 46.Xdel(Xp).", "B. 46Xr(X).", "C. 45X/46.XX/47.XXX.", "D. 45.X/46.XY.", "E. 46.X.i(Xq)."], ans: ["B"] },
+          { q: "A propos du syndrome de Turner, quelles sont les propositions justes ?", opts: ["A. C'est la seule monosomie complète viable.", "B. Sa survenue n'est pas influencée par l'âge maternel ou paternel.", "C. La fertilité est normale.", "D. Le phénotype est masculin avec dysmorphie et retard mental.", "E. La formule chromosomique la plus fréquente est 46Xdel(Xp)."], ans: ["A","B"] },
+          { q: "Dans le syndrome de Turner, quelle est la formule chromosomique nécessitant une gonadectomie ?", opts: ["A. 46X.del(Xp).", "B. 46.X.del(Xq).", "C. 45X/46.XX/47XXX.", "D. 45X/46.XY.", "E. 46X.i(Xq)."], ans: ["D"] },
+      ]}
+    ];
 
-const LETTER = ["A","B","C","D","E"];
+    const LETTER = ["A","B","C","D","E"];
 
-function App() {
-  const [activeTab, setActiveTab] = useState("t21");
-  const [selections, setSelections] = useState({});
-  const [checked, setChecked] = useState({});
+    function App() {
+      const [activeTab, setActiveTab] = useState("t21");
+      const [selections, setSelections] = useState({});
+      const [checked, setChecked] = useState({});
 
-  const topic = TOPICS.find(t => t.id === activeTab);
-  const { accent, light, border } = topic;
+      const topic = TOPICS.find(t => t.id === activeTab);
+      const { accent, light, border } = topic;
 
-  function qKey(topicId, qi) { return `${topicId}-${qi}`; }
+      function qKey(topicId, qi) { return `${topicId}-${qi}`; }
 
-  function toggle(topicId, qi, letter) {
-    const key = qKey(topicId, qi);
-    setSelections(prev => {
-      const cur = prev[key] || [];
-      return { ...prev, [key]: cur.includes(letter) ? cur.filter(l => l !== letter) : [...cur, letter] };
-    });
-  }
+      function toggle(topicId, qi, letter) {
+        const key = qKey(topicId, qi);
+        setSelections(prev => {
+          const cur = prev[key] || [];
+          return { ...prev, [key]: cur.includes(letter) ? cur.filter(l => l !== letter) : [...cur, letter] };
+        });
+      }
 
-  function verify(topicId, qi) {
-    setChecked(prev => ({ ...prev, [qKey(topicId, qi)]: true }));
-  }
+      function verify(topicId, qi) {
+        setChecked(prev => ({ ...prev, [qKey(topicId, qi)]: true }));
+      }
 
-  function reset(topicId, qi) {
-    const key = qKey(topicId, qi);
-    setSelections(prev => { const n = { ...prev }; delete n[key]; return n; });
-    setChecked(prev => { const n = { ...prev }; delete n[key]; return n; });
-  }
+      function reset(topicId, qi) {
+        const key = qKey(topicId, qi);
+        setSelections(prev => { const n = { ...prev }; delete n[key]; return n; });
+        setChecked(prev => { const n = { ...prev }; delete n[key]; return n; });
+      }
 
-  function getStatus(topicId, qi) {
-    const key = qKey(topicId, qi);
-    if (!checked[key]) return null;
-    const sel = selections[key] || [];
-    const ans = topic.questions[qi].ans;
-    return sel.length === ans.length && ans.every(a => sel.includes(a)) ? "correct" : "wrong";
-  }
-
-  const total = topic.questions.length;
-  const done = topic.questions.filter((_, i) => checked[qKey(activeTab, i)]).length;
-  const correct = topic.questions.filter((_, i) => getStatus(activeTab, i) === "correct").length;
-
-  return (
-    <div className="glass" style={{ fontFamily: "Arial", maxWidth: 900, margin: "0 auto", padding: "1.5rem", background: "rgba(17,24,39,0.85)" }}>
-      <div style={{ padding: "1.5rem 0 0.5rem", borderBottom: `2px solid ${border}`, marginBottom: "1rem" }}>
-        <div style={{ fontSize: 11, fontWeight: 500, letterSpacing: "0.08em", color: "var(--color-text-secondary)", textTransform: "uppercase", marginBottom: 6 }}>Génétique Médicale — QCM Interactif</div>
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-          {TOPICS.map(t => (
-            <button key={t.id} onClick={() => setActiveTab(t.id)}
-              style={{ padding: "7px 16px", borderRadius: 20, fontSize: 13, fontWeight: 500, cursor: "pointer", border: `1.5px solid ${t.border}`,
-                background: activeTab === t.id ? t.accent : "transparent",
-                color: activeTab === t.id ? "#fff" : t.accent, transition: "all 0.15s" }}>
-              {t.label}
-            </button>
-          ))}
-        </div>
-      </div>
-
-      <div style={{ display: "flex", gap: 12, margin: "0.75rem 0 1.25rem", flexWrap: "wrap" }}>
-        {[["Questions", total], ["Vérifiées", done], ["Correctes", correct]].map(([label, val]) => (
-          <div key={label} style={{ flex: 1, minWidth: 100, background: "rgba(255,255,255,0.08)", borderRadius: "var(--border-radius-md)", padding: "10px 14px" }}>
-            <div style={{ fontSize: 11, color: "var(--color-text-secondary)", fontWeight: 500, marginBottom: 2 }}>{label}</div>
-            <div style={{ fontSize: 22, fontWeight: 500, color: label === "Correctes" && done > 0 ? accent : "var(--color-text-primary)" }}>{val}</div>
-          </div>
-        ))}
-        <div style={{ flex: 1, minWidth: 100, background: "rgba(255,255,255,0.08)", borderRadius: "var(--border-radius-md)", padding: "10px 14px" }}>
-          <div style={{ fontSize: 11, color: "var(--color-text-secondary)", fontWeight: 500, marginBottom: 2 }}>Score</div>
-          <div style={{ fontSize: 22, fontWeight: 500, color: accent }}>{done > 0 ? Math.round(correct / done * 100) : 0}%</div>
-        </div>
-      </div>
-
-      {topic.questions.map((q, qi) => {
-        const key = qKey(activeTab, qi);
+      function getStatus(topicId, qi) {
+        const key = qKey(topicId, qi);
+        if (!checked[key]) return null;
         const sel = selections[key] || [];
-        const isChecked = !!checked[key];
-        const status = getStatus(activeTab, qi);
+        const ans = topic.questions[qi].ans;
+        return sel.length === ans.length && ans.every(a => sel.includes(a)) ? "correct" : "wrong";
+      }
 
-        return (
-          <div key={qi} style={{ background: "rgba(255,255,255,0.05)", border: `0.5px solid ${isChecked ? (status === "correct" ? "#1D9E75" : "#D85A30") : "var(--color-border-tertiary)"}`,
-            borderRadius: "var(--border-radius-lg)", padding: "1rem 1.25rem", marginBottom: 12 }}>
-            <div style={{ display: "flex", gap: 10, marginBottom: 10, alignItems: "flex-start" }}>
-              <span style={{ minWidth: 28, height: 28, borderRadius: "50%", background: light, display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: 12, fontWeight: 500, color: accent, flexShrink: 0 }}>{qi + 1}</span>
-              <p style={{ margin: 0, fontSize: 14, fontWeight: 500, color: "#ffffff", lineHeight: 1.5 }}>{q.q}</p>
+      const total = topic.questions.length;
+      const done = topic.questions.filter((_, i) => checked[qKey(activeTab, i)]).length;
+      const correct = topic.questions.filter((_, i) => getStatus(activeTab, i) === "correct").length;
+
+      return (
+        <div className="glass-container" style={{ maxWidth: 900, margin: "0 auto", padding: "2rem" }}>
+          
+          <div style={{ paddingBottom: "1.5rem", borderBottom: `2px solid ${light}`, marginBottom: "1.5rem" }}>
+            <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.08em", color: "#64748b", textTransform: "uppercase", marginBottom: 12 }}>
+              🧬 Génétique Médicale — QCM Interactif
             </div>
-
-            <div style={{ display: "flex", flexDirection: "column", gap: 6, marginBottom: 12, paddingLeft: 38 }}>
-              {q.opts.map((opt, oi) => {
-                const letter = LETTER[oi];
-                const selected = sel.includes(letter);
-                const isCorrectOpt = q.ans.includes(letter);
-
-                let bg = "transparent", borderCol = "var(--color-border-tertiary)", textCol = "var(--color-text-primary)";
-                if (isChecked) {
-                  if (isCorrectOpt) { bg = "rgba(29,158,117,0.1)"; borderCol = "#1D9E75"; textCol = "#085041"; }
-                  else if (selected && !isCorrectOpt) { bg = "rgba(216,90,48,0.1)"; borderCol = "#D85A30"; textCol = "#4A1B0C"; }
-                } else if (selected) {
-                  bg = light; borderCol = accent; textCol = accent;
-                }
-
-                return (
-                  <div key={oi} onClick={() => !isChecked && toggle(activeTab, qi, letter)}
-                    style={{ display: "flex", alignItems: "flex-start", gap: 8, padding: "7px 10px", borderRadius: "var(--border-radius-md)",
-                      border: `0.5px solid ${borderCol}`, background: bg, cursor: isChecked ? "default" : "pointer",
-                      transition: "all 0.1s", userSelect: "none" }}>
-                    <div style={{ width: 16, height: 16, borderRadius: 4, border: `1.5px solid ${borderCol}`, flexShrink: 0, marginTop: 1,
-                      background: selected ? accent : "transparent", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      {selected && <svg width="10" height="10" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2" fill="none" stroke="#fff" strokeWidth="1.5" strokeLinecap="round"/></svg>}
-                      {isChecked && isCorrectOpt && !selected && <svg width="10" height="10" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2" fill="none" stroke="#1D9E75" strokeWidth="1.5" strokeLinecap="round"/></svg>}
-                    </div>
-                    <span style={{ fontSize: 13, color: textCol, lineHeight: 1.4 }}>{opt}</span>
-                  </div>
-                );
-              })}
-            </div>
-
-            <div style={{ paddingLeft: 38, display: "flex", gap: 8, alignItems: "center" }}>
-              {!isChecked ? (
-                <button onClick={() => verify(activeTab, qi)}
-                  style={{ padding: "6px 16px", borderRadius: 20, fontSize: 12, fontWeight: 500, cursor: sel.length === 0 ? "not-allowed" : "pointer",
-                    border: `1px solid ${accent}`, background: sel.length === 0 ? "transparent" : accent,
-                    color: sel.length === 0 ? accent : "#fff", opacity: sel.length === 0 ? 0.5 : 1, transition: "all 0.15s" }}>
-                  Vérifier
+            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+              {TOPICS.map(t => (
+                <button key={t.id} onClick={() => setActiveTab(t.id)}
+                  style={{ 
+                    padding: "8px 18px", 
+                    borderRadius: 24, 
+                    fontSize: 14, 
+                    fontWeight: 600, 
+                    cursor: "pointer", 
+                    border: `1.5px solid ${activeTab === t.id ? 'transparent' : t.border}`,
+                    background: activeTab === t.id ? t.accent : "#ffffff",
+                    color: activeTab === t.id ? "#fff" : t.accent, 
+                  }}>
+                  {t.label}
                 </button>
-              ) : (
-                <>
-                  <span style={{ fontSize: 12, fontWeight: 500, color: status === "correct" ? "#0F6E56" : "#993C1D",
-                    background: status === "correct" ? "#E1F5EE" : "#FAECE7", padding: "4px 10px", borderRadius: 12 }}>
-                    {status === "correct" ? "✓ Correct" : "✗ Incorrect"}
-                  </span>
-                  <button onClick={() => reset(activeTab, qi)}
-                    style={{ padding: "4px 12px", borderRadius: 12, fontSize: 12, cursor: "pointer",
-                      border: "0.5px solid var(--color-border-secondary)", background: "transparent", color: "var(--color-text-secondary)" }}>
-                    Réessayer
-                  </button>
-                </>
-              )}
-              {isChecked && status !== "correct" && (
-                <span style={{ fontSize: 11, color: "var(--color-text-secondary)" }}>
-                  Réponse(s) : {q.ans.join(", ")}
-                </span>
-              )}
+              ))}
             </div>
           </div>
-        );
-      })}
-    </div>
-  );
-}
 
+          <div style={{ display: "flex", gap: 16, marginBottom: "2rem", flexWrap: "wrap" }}>
+            {[["Questions 📝", total], ["Vérifiées 🔍", done], ["Correctes ✅", correct]].map(([label, val]) => (
+              <div key={label} className="stat-box" style={{ flex: 1, minWidth: 120 }}>
+                <div style={{ fontSize: 12, color: "#64748b", fontWeight: 600, marginBottom: 4 }}>{label}</div>
+                <div style={{ fontSize: 24, fontWeight: 700, color: label.includes("Correctes") && done > 0 ? accent : "#1e293b" }}>{val}</div>
+              </div>
+            ))}
+            <div className="stat-box" style={{ flex: 1, minWidth: 120, borderLeft: `4px solid ${accent}` }}>
+              <div style={{ fontSize: 12, color: "#64748b", fontWeight: 600, marginBottom: 4 }}>Score 🎯</div>
+              <div style={{ fontSize: 24, fontWeight: 700, color: accent }}>{done > 0 ? Math.round(correct / done * 100) : 0}%</div>
+            </div>
+          </div>
+
+          {topic.questions.map((q, qi) => {
+            const key = qKey(activeTab, qi);
+            const sel = selections[key] || [];
+            const isChecked = !!checked[key];
+            const status = getStatus(activeTab, qi);
+
+            return (
+              <div key={qi} className="question-card" 
+                style={{ 
+                  borderLeft: `4px solid ${isChecked ? (status === "correct" ? "#10b981" : "#ef4444") : "transparent"}`
+                }}>
+                <div style={{ display: "flex", gap: 12, marginBottom: 16, alignItems: "flex-start" }}>
+                  <span style={{ minWidth: 32, height: 32, borderRadius: "50%", background: light, display: "flex", alignItems: "center", justifyContent: "center",
+                    fontSize: 14, fontWeight: 700, color: accent, flexShrink: 0 }}>{qi + 1}</span>
+                  <p style={{ margin: 0, fontSize: 15, fontWeight: 600, color: "#1e293b", lineHeight: 1.6, paddingTop: 4 }}>{q.q}</p>
+                </div>
+
+                <div style={{ display: "flex", flexDirection: "column", gap: 8, marginBottom: 16, paddingLeft: 44 }}>
+                  {q.opts.map((opt, oi) => {
+                    const letter = LETTER[oi];
+                    const selected = sel.includes(letter);
+                    const isCorrectOpt = q.ans.includes(letter);
+
+                    let bg = "#f8fafc", borderCol = "#e2e8f0", textCol = "#475569";
+                    if (isChecked) {
+                      if (isCorrectOpt) { bg = "#ecfdf5"; borderCol = "#10b981"; textCol = "#065f46"; }
+                      else if (selected && !isCorrectOpt) { bg = "#fef2f2"; borderCol = "#ef4444"; textCol = "#991b1b"; }
+                    } else if (selected) {
+                      bg = light; borderCol = accent; textCol = accent;
+                    }
+
+                    return (
+                      <div key={oi} onClick={() => !isChecked && toggle(activeTab, qi, letter)}
+                        style={{ display: "flex", alignItems: "flex-start", gap: 10, padding: "10px 14px", borderRadius: 12,
+                          border: `1.5px solid ${borderCol}`, background: bg, cursor: isChecked ? "default" : "pointer",
+                          transition: "all 0.2s", userSelect: "none" }}>
+                        <div style={{ width: 18, height: 18, borderRadius: 6, border: `2px solid ${borderCol}`, flexShrink: 0, marginTop: 2,
+                          background: selected ? accent : "transparent", display: "flex", alignItems: "center", justifyContent: "center", transition: "all 0.2s" }}>
+                          {selected && <svg width="12" height="12" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round"/></svg>}
+                          {isChecked && isCorrectOpt && !selected && <svg width="12" height="12" viewBox="0 0 10 10"><polyline points="1.5,5 4,7.5 8.5,2" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round"/></svg>}
+                        </div>
+                        <span style={{ fontSize: 14, color: textCol, lineHeight: 1.5, fontWeight: 500 }}>{opt}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div style={{ paddingLeft: 44, display: "flex", gap: 12, alignItems: "center" }}>
+                  {!isChecked ? (
+                    <button onClick={() => verify(activeTab, qi)}
+                      style={{ padding: "8px 20px", borderRadius: 20, fontSize: 13, fontWeight: 600, cursor: sel.length === 0 ? "not-allowed" : "pointer",
+                        border: "none", background: sel.length === 0 ? "#e2e8f0" : accent,
+                        color: sel.length === 0 ? "#94a3b8" : "#fff", transition: "all 0.2s", boxShadow: sel.length === 0 ? "none" : `0 4px 12px ${light}` }}>
+                      Vérifier
+                    </button>
+                  ) : (
+                    <>
+                      <span style={{ fontSize: 13, fontWeight: 700, color: status === "correct" ? "#047857" : "#b91c1c",
+                        background: status === "correct" ? "#d1fae5" : "#fee2e2", padding: "6px 14px", borderRadius: 16 }}>
+                        {status === "correct" ? "✨ Bonne réponse !" : "💡 Oups, à revoir"}
+                      </span>
+                      <button onClick={() => reset(activeTab, qi)}
+                        style={{ padding: "6px 14px", borderRadius: 16, fontSize: 13, fontWeight: 600, cursor: "pointer",
+                          border: "1.5px solid #cbd5e1", background: "#f8fafc", color: "#64748b" }}>
+                        Réessayer 🔄
+                      </button>
+                    </>
+                  )}
+                  {isChecked && status !== "correct" && (
+                    <span style={{ fontSize: 13, color: "#64748b", fontWeight: 500, marginLeft: "auto", background: "#f1f5f9", padding: "6px 12px", borderRadius: 12 }}>
+                      Réponse(s) exacte(s) : <strong style={{ color: "#0f172a" }}>{q.ans.join(", ")}</strong>
+                    </span>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      );
+    }
 
     ReactDOM.createRoot(document.getElementById("root")).render(<App />);
   </script>
