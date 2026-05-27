@@ -106,23 +106,72 @@
       border-radius: 12px;
     }
 
+    /* ==== MENU DÉFILANT AVEC BOUTONS ==== */
+    .tabs-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .scroll-btn {
+      background: #ffffff;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 50%;
+      min-width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: #64748b;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+      padding: 0;
+    }
+
+    .scroll-btn:active {
+      transform: scale(0.9);
+    }
+
+    @media (hover: hover) {
+      .scroll-btn:hover {
+        background: #f8fafc;
+        color: #0f172a;
+        border-color: #94a3b8;
+      }
+    }
+
+    .tabs-container {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none; /* Firefox */
+      padding: 4px 0;
+      flex: 1;
+    }
+
+    .tabs-container::-webkit-scrollbar {
+      display: none; /* Chrome/Safari */
+    }
+
+    .tabs-container button {
+      flex-shrink: 0;
+      white-space: nowrap;
+    }
+
     /* ==== RESPONSIVE MOBILE ==== */
     @media screen and (max-width: 768px) {
       body {
-        padding: 8px; /* Moins de marge sur les bords */
+        padding: 8px;
       }
       
       .glass-container {
         padding: 1.25rem 1rem;
         border-radius: 20px;
-      }
-
-      .tabs-container button {
-        flex: 1;
-        min-width: 45%;
-        text-align: center;
-        padding: 10px 8px !important;
-        font-size: 13px !important;
       }
 
       .stats-grid {
@@ -131,7 +180,7 @@
       }
 
       .stat-box {
-        min-width: 45%; /* Grille 2x2 sur mobile */
+        min-width: 45%;
         padding: 10px;
       }
 
@@ -140,7 +189,7 @@
       }
 
       .options-wrapper {
-        padding-left: 0; /* Aligné à gauche sur mobile */
+        padding-left: 0;
       }
 
       .action-bar {
@@ -150,7 +199,7 @@
       }
 
       .action-bar button {
-        flex: 1; /* Boutons larges sur mobile */
+        flex: 1;
         padding: 10px 0 !important;
         display: flex;
         justify-content: center;
@@ -181,7 +230,7 @@
   <div id="root"></div>
 
   <script type="text/babel">
-    const { useState } = React;
+    const { useState, useRef } = React;
 
     const TOPICS = [
       { id: "t21", label: "Trisomie 21", accent: "#059669", light: "#d1fae5", border: "#34d399", questions: [
@@ -412,7 +461,7 @@
       { id: "cri", label: "Cri du Chat (5p-)", accent: "#0284c7", light: "#e0f2fe", border: "#38bdf8", questions: [
           { q: "Dans la maladie du cri du chat :", opts: ["A. La plupart des enfants décèdent durant leur enfance", "B. Le retard mental est profond", "C. Le caryotype des parents est non obligatoire", "D. La corrélation génotype-phénotype dépend de la taille de la délétion", "E. Le risque de récurrence en cas de délétion de novo est de 20%"], ans: ["A","B","D"] },
           { q: "Dans la maladie du cri du chat par délétion de novo, le risque de récurrence est :", opts: ["A. Inconnu", "B. De 50%", "C. De 15%", "D. De 5%", "E. De 25%"], ans: ["B"] },
-          { q: "Dans le syndrome du cri du chat :", opts: ["A. La majorité des enfants décèdent durant leur enfance", "B. Les enfants survivants ont une légère déficience intellectuelle", "C. Le caryotype des parents est obligatoire", "D. Il n'y a pas de corrélation génotype-phénotype", "E. Le développement psychomoteur est normal"], ans: ["A","C","D"] },
+          { q: "Dans le syndrome du cri du chat :", opts: ["A. La majority des enfants décèdent durant leur enfance", "B. Les enfants survivants ont une légère déficience intellectuelle", "C. Le caryotype des parents est obligatoire", "D. Il n'y a pas de corrélation génotype-phénotype", "E. Le développement psychomoteur est normal"], ans: ["A","C","D"] },
           { q: "La délétion responsable de la maladie du cri du chat :", opts: ["A. Intéresse le bras court du chromosome 7", "B. Est mise en évidence par un caryotype standard", "C. Peut-être de novo", "D. Peut être détectée en anténatale", "E. Entraine la perte du gène de la d-caténine"], ans: ["C","D","E"] },
           { q: "La dysmorphie faciale de la maladie du cri du chat regroupe :", opts: ["A. Une face ronde", "B. Un épicanthus", "C. Des oreilles bas implantées", "D. Un prognathisme", "E. Des fentes palpébrales antimongoloïdes"], ans: ["A","B","C"] },
           { q: "Dans la maladie du cri du chat :", opts: ["A. Le caryotype des parents est indispensable", "B. La plupart des enfants décèdent durant leur enfance", "C. Le tableau clinique ne dépend pas de la taille de la délétion", "D. Les enfants ont un profond retard mental", "E. Aucune réponse n'est juste"], ans: ["A","B","D"] },
@@ -477,7 +526,7 @@
           { q: "Le caryotype dans l'anémie de Fanconi peut montrer :", opts: ["A. Des cassures chromatidiennes spontanées", "B. Des cassures chromatidiennes induites", "C. Des sites de fragilité chromosomique", "D. Une Translocation équilibrée", "E. Une configuration en rosette"], ans: ["A","B","E"] },
           { q: "(Cas clinique) Une femme enceinte de 12 SA demande un conseil génétique car son fils de 8 ans présente plusieurs malformations du squelette et un faciès miniaturisé. Quel est le diagnostic le plus probable ?", opts: ["A. Le syndrome d'Angelman", "B. Le syndrome de Prader-Willi", "C. Le syndrome de Williams", "D. Le syndrome de l'X fragile", "E. L'Anémie de Fanconi"], ans: ["E"] },
           { q: "Pour confirmer ce diagnostic, quel examen paraclinique doit-on réaliser ?", opts: ["A. Un caryotype standard", "B. Un caryotype avec utilisation d'agents pontants", "C. Une étude moléculaire du transcrit SNRPN", "D. Une FISH", "E. Une étude moléculaire du gène FMR1"], ans: ["B"] },
-          { q: "Ce test va montrer :", opts: ["A. Une expansion de triplet CGG > 200 sans méthylation de l'îlot CPG", "B. Une microdélétion", "C. Des images triradiales", "D. Une translocation robertsonnienne", "E. Une translocation déséquilibrée"], ans: ["C"] },
+          { q: "Ce test va montrer :", opts: ["A. Une expansion de triplet CGG > 200 sans méthylation de l'ilôt CPG", "B. Une microdélétion", "C. Des images triradiales", "D. Une translocation robertsonnienne", "E. Une translocation déséquilibrée"], ans: ["C"] },
           { q: "Quels autres examens paracliniques doit-on réaliser ?", opts: ["A. Des radiologies du squelette", "B. Une NFS", "C. Une IRM cérébrale", "D. Une échographie cardiaque", "E. Une glycémie à jeun"], ans: ["A","B","D"] },
           { q: "Une étude génétique a confirmé le diagnostic. Quels sont les modes de transmission de ce syndrome ?", opts: ["A. Autosomique dominant", "B. Autosomique récessif", "C. Récessif lié à l'X", "D. Dominant lié à l'X", "E. Mitochondrial"], ans: ["A","B","C"] },
           { q: "La mère est désireuse d'un diagnostic prénatal. Sur quel type de prélèvement peut-il être réalisé ?", opts: ["A. Liquide amniotique", "B. Trophoblaste", "C. Sang du cordon", "D. Fibroblastes", "E. Cellules fœtales circulantes"], ans: ["C"] },
@@ -509,7 +558,7 @@
           { q: "Les marqueurs chromosomiques surnuméraires (MCS) sont :", opts: ["A. Des chromosomes additionnels dont l'origine est déterminée.", "B. Des chromosomes additionnels dont l'origine est inconnue.", "C. Des anomalies dont la taille est ≤ à un chromosome 20 dans la même métaphase.", "D. Un groupe hétérogène d'anomalies chromosomiques de structure.", "E. Un groupe hétérogène d'anomalies chromosomiques sans conséquences cliniques."], ans: ["B","C","D"] },
           { q: "Pour trouver l'origine d'un marqueur chromosomique surnuméraire (MCS) découvert sur un caryotype standard il faut :", opts: ["A. Le confirmer par un deuxième caryotype.", "B. Réaliser un caryotype des parents.", "C. Réaliser une CGH suivie d'une FISH.", "D. Réaliser une coloration NOR suivie d'une FISH et d'une CGH à la fin.", "E. S'abstenir et faire le conseil génétique."], ans: ["B","D"] },
           { q: "(Cas clinique) Une femme âgée de 32 ans consulte pour une infertilité. L'examen clinique retrouve un phénotype normal. Les MCS sont :", opts: ["A. Des chromosomes additionnels dont l'origine est bien connue.", "B. Des chromosomes additionnels dont l'origine est indéterminée.", "C. Des anomalies dont la taille est inférieure à un chromosome 20 dans la même métaphase.", "D. Des anomalies dont la taille est inférieure à un chromosome 21 dans la même métaphase.", "E. Un groupe hétérogène d'anomalies chromosomiques avec conséquences cliniques variables."], ans: ["B","C","E"] },
-          { q: "Le phénotype de cette femme est normal car son anomalie chromosomique peut se trouver dans :", opts: ["A. Les bras courts des autosomes.", "B. Les bras longs des autosomes.", "C. Les bras longs des gonosomes.", "D. Les régions péricentromériques.", "E. Les régions satellites des bras courts des chromosomes acrocentriques."], ans: ["D","E"] },
+          { q: "Le phénotype de cette femme est normal car son anomalie chromosomique peut se trouvers dans :", opts: ["A. Les bras courts des autosomes.", "B. Les bras longs des autosomes.", "C. Les bras longs des gonosomes.", "D. Les régions péricentromériques.", "E. Les régions satellites des bras courts des chromosomes acrocentriques."], ans: ["D","E"] },
           { q: "Pour trouver l'origine du MCS il faut :", opts: ["A. Le confirmer par un caryotype sur fibroblastes.", "B. Réaliser une FISH de tous les chromosomes.", "C. Réaliser une FISH suivie d'une CGH.", "D. Réaliser une coloration NOR suivie d'une FISH et d'une CGH à la fin.", "E. Aucune réponse n'est juste."], ans: ["D"] },
           { q: "Les marqueurs chromosomiques surnuméraires (MCS) sont :", opts: ["A. Des chromosomes additionnels dont l'origine est indéterminée.", "B. Des chromosomes additionnels dont l'origine est bien connue.", "C. Des anomalies dont la taille est ≤ à un chromosome 20 dans la même métaphase.", "D. Un groupe hétérogène d'anomalies chromosomiques avec conséquences cliniques variables.", "E. Un groupe hétérogène d'anomalies chromosomiques sans conséquences cliniques."], ans: ["A","C","D"] },
           { q: "Pour trouver l'origine d'un marqueur chromosomique surnuméraire (MCS) découvert sur un caryotype standard il faut :", opts: ["A. Le confirmer par un deuxième caryotype.", "B. Réaliser un caryotype des parents.", "C. Réaliser une FISH suivie d'une coloration NOR et une CGH à la fin.", "D. Réaliser une coloration NOR suivie d'une FISH et d'une CGH à la fin.", "E. Aucune réponse n'est juste."], ans: ["D"] },
@@ -623,47 +672,8 @@
           { q: "Le nombre de répétition CGG chez la mère du cas index peut :", opts: ["A. Se situer entre 0 et 50.", "B. Se situer entre 50 et 199.", "C. Se situer entre 199 et 379.", "D. Être égal à 380.", "E. Aucune réponse n'est juste."], ans: ["B","C"] },
           { q: "Le frère du cas index âgé de 15 ans a un nombre de répétitions CGG égale à 127. Le nombre de répétition CGG égale à 127 est :", opts: ["A. Normal.", "B. Correspond à une prémutation.", "C. Correspond à une mutation complète.", "D. Associé à une hyperméthylation du promoteur.", "E. Aucune réponse n'est juste."], ans: ["B"] },
           { q: "Le nombre de répétition CGG égale à 127 correspond à un individu avec phénotype :", opts: ["A. Normal.", "B. Du syndrome de l'X fragile.", "C. Du syndrome neurodégénératif FXTAS.", "D. Associant une ataxie cérébelleuse avec une neuropathie sensitivomotrice.", "E. Aucune réponse n'est juste."], ans: ["C","D"] },
-          { q: "Les mutations dynamiques :", opts: ["A. Sont des mutations stables.", "B. Sont dues à la répétition excessive de trois bases nucléotidiques.", "C. Peuvent être expliquées par le dérapage réplicatif.", "D. Peuvent se trouver dans la région non traduite d'un gène.", "E. Ne sont pas transmissibles."], ans: ["B","C","D"] },
+          { q: "Les mutations dynamiques :", opts: ["A. Sont des mutations stables.", "B. Sont dues à la répétition excessive de trois bases nucléotidiques.", "C. Peuvent être expliquées par le dérapage réplicatif.", "D. Peuvent se trouvers dans la région non traduite d'un gène.", "E. Ne sont pas transmissibles."], ans: ["B","C","D"] },
           { q: "Dans le syndrome d'X fragile, quels sont les signes cliniques retrouvés après la puberté ?", opts: ["A. Le retard mental.", "B. Le trouble du langage.", "C. La dysmorphie faciale.", "D. L'hyperactivité.", "E. La macro-orchidie."], ans: ["A","C","E"] },
-      ]},
-      { id: "turner", label: "Turner", accent: "#db2777", light: "#fce7f3", border: "#f472b6", questions: [
-          { q: "Dans le syndrome de Turner, les examens para-cliniques à demander chez une fillette de 8 ans sont :", opts: ["A. Une échographie rénale.", "B. Le dosage de la LH et de la FSH dans le sang.", "C. Le dosage de la LH et de la FSH dans les urines.", "D. Le dosage de l'oestradiol.", "E. La recherche du gène SRY."], ans: ["A","B","E"] },
-          { q: "(Cas clinique – fille 15 ans, retard pubertaire) A l'examen clinique, les signes de dysmorphie faciale ci-dessous peuvent être présents SAUF un, lequel ?", opts: ["A. Une nuque aplatie avec excès de peau.", "B. Une bouche en chapeau de gendarme.", "C. Un épicanthus.", "D. Un ptosis.", "E. Un microrétrognathisme."], ans: ["B"] },
-          { q: "Les malformations qui peuvent être retrouvées sont :", opts: ["A. Un cubitus valgus,", "B. Une coarctation de l'aorte.", "C. Une hyperplasie de l'utérus.", "D. Un rein en fer à cheval.", "E. Une brachymétacarpie du 4ème et 5ème doigts."], ans: ["A","B","D","E"] },
-          { q: "Les examens complémentaires à réaliser dans le syndrome de Turner chez une fillette de 7 ans sont :", opts: ["A. Dosage de la LH et FSH.", "B. Radios de squelette.", "C. Dosage de l'oestradiol.", "D. Echographie rénale.", "E. Echographie cardiaque."], ans: ["B","D","E"] },
-          { q: "Au Maroc, la prise en charge du syndrome de Turner est basée sur :", opts: ["A. Le traitement par l'hormone de croissance.", "B. Le don d'ovocytes.", "C. Le traitement oestro-progestatif.", "D. L'ablation systématique des gonades.", "E. La plastie des organes génitaux externes."], ans: ["A","C"] },
-          { q: "Quels sont les formules chromosomiques rencontrées dans le syndrome de Turner ?", opts: ["A. 46,X,i(Xq).", "B. 45,X/46,XX/47,XXX.", "C. 45,X/46,XY/47,XXY.", "D. 46,X,del(Xp).", "E. 47,XYY."], ans: ["A","B","C","D"] },
-          { q: "Dans le syndrome de Turner sa mosaïque :", opts: ["A. La puberté est normale.", "B. La fertilité est possible.", "C. Le pronostic est mauvais.", "D. La ménopause précoce est fréquente.", "E. Le risque de gonadoblastome est élevé."], ans: ["A","B","D"] },
-          { q: "A propos du syndrome de Turner, quelle est la formule chromosomique associée à un retard mental ?", opts: ["A. 46,X,del(Xp).", "B. 46,X,del(Xq).", "C. 46,X,r(X).", "D. 45,X/46,XY.", "E. 46,X,i(Xq)."], ans: ["C"] },
-          { q: "Dans le syndrome de Turner, quelle est la formule chromosomique nécessitant une gonadectomie ?", opts: ["A. 46,X,del(Xp).", "B. 46,X,del(Xq).", "C. 45,X/46,XX/47,XXX.", "D. 45,X/46,XY.", "E. 46,X,i(Xq)."], ans: ["D"] },
-          { q: "Le syndrome de Turner est :", opts: ["A. La seule monosomie complète viable.", "B. Influencé par l'âge maternel.", "C. Dû à la perte d'un chromosome X.", "D. Caractérisé par une aménorrhée primaire.", "E. Caractérisé par des malformations rénales."], ans: ["A","C","D","E"] },
-          { q: "Quels sont les examens paracliniques à demander chez une fillette de 7 ans ayant le syndrome de Turner ?", opts: ["A. Une radiologie du squelette.", "B. Une échographie rénale.", "C. Une échographie cardiaque.", "D. Un examen ophtalmologique.", "E. Le dosage de la LH et de la FSH."], ans: ["A","B","C","D"] },
-          { q: "Dans le syndrome de Turner, quelles sont les formules chromosomiques nécessitant une gonadectomie ?", opts: ["A. 45X/46XY.", "B. 46Xdel(Xp).", "C. 46Xdel(Xq).", "D. 45X/46XX/47XXX.", "E. 46Xi(Xq)."], ans: ["A"] },
-          { q: "A propos du syndrome de Turner, quelle est la proposition FAUSSE ?", opts: ["A. C'est la seule monosomie complète viable.", "B. Il n'y a pas d'influence de l'âge maternel ou paternel.", "C. La fertilité est normale.", "D. Le phénotype est féminin associé à un retard pubertaire.", "E. La formule chromosomique la plus fréquente est 45X."], ans: ["C"] },
-          { q: "Dans le syndrome de Turner, la triade diagnostique regroupe :", opts: ["A. Une petite taille.", "B. Une déficience intellectuelle.", "C. Un ptérigium coli.", "D. Une hyperphagie.", "E. Une aménorrhée primaire."], ans: ["A","C","E"] },
-          { q: "Dans le syndrome de Turner, quelle est la formule chromosomique qui correspond à une mosaïque ?", opts: ["A. 46,X,del(Xp).", "B. 46,X,r(X).", "C. 45,X.", "D. 46,X,i(Xq).", "E. 45X/46XY."], ans: ["E"] },
-          { q: "L'inactivation du chromosome X s'accomplit :", opts: ["A. A un stade précoce de l'embryogenèse.", "B. A la naissance.", "C. Au hasard.", "D. Sur les allèles d'un seul chromosome X.", "E. Sur les chromosomes X d'origine maternelle."], ans: ["A","C"] },
-          { q: "Dans le syndrome de Turner avec un chromosome X en anneau :", opts: ["A. La fertilité est préservée.", "B. Le retard mental est constant.", "C. Le retard statural est constant.", "D. Les malformations squelettiques sont absentes.", "E. Le risque de gonadoblastome est élevé."], ans: ["B"] },
-          { q: "Dans le syndrome de Turner, quelle est la formule chromosomique qui s'accompagne d'un retard mental ?", opts: ["A. 46,X,del(Xp).", "B. 46,X,r(X).", "C. 45X/46XX/47XXX.", "D. 46,X,i(Xq).", "E. 45X/46XY."], ans: ["B"] },
-          { q: "(Cas clinique – patiente 40 ans, enceinte 24 SA, hygroma fœtal + RCIU) Quels sont les diagnostics à évoquer ?", opts: ["A. La trisomie 21.", "B. La trisomie 18.", "C. Le syndrome de Prader-Willi.", "D. Le syndrome de Klinefelter.", "E. Le syndrome de Turner."], ans: ["B","E"] },
-          { q: "Pour confirmer le diagnostic RAPIDEMENT, quel examen allez-vous demander ?", opts: ["A. Un caryotype suivi d'une FISH.", "B. Une FISH suivie d'un caryotype.", "C. Un caryotype avec agent pontant.", "D. Uniquement un caryotype.", "E. L'abstention de tout examen."], ans: ["B"] },
-          { q: "A ce stade, quel est le diagnostic le plus probable (bébé féminin, replis cutanés au cou) ?", opts: ["A. Trisomie 21.", "B. Trisomie 18.", "C. Syndrome de Prader-Willi.", "D. Syndrome de Klinefelter.", "E. Syndrome de Turner."], ans: ["E"] },
-          { q: "Quel autre examen clinique manque à votre consultation à la maternité ?", opts: ["A. Examen cardiovasculaire.", "B. Examen des aires ganglionnaires.", "C. Examen cutané.", "D. Examen ORL.", "E. Examen ophtalmologique."], ans: ["A"] },
-          { q: "Un caryotype a montré la formule : 45X/46XY. A long terme, quel est le risque pour ce nouveau-né ?", opts: ["A. Le retard mental.", "B. Le développement d'un gonadoblastome.", "C. Le développement d'une leucémie.", "D. Les fausses couches à répétitions.", "E. Aucun risque."], ans: ["B"] },
-          { q: "Dans le syndrome de Turner, quelle est la formule chromosomique nécessitant une gonadectomie ?", opts: ["A. 46Xdel(Xp).", "B. 46Xr(X).", "C. 45X/46XX/47XXX.", "D. 46Xj(Xq).", "E. 45X/46XY."], ans: ["E"] },
-          { q: "Quels sont les signes cliniques retrouvés dans le syndrome de Turner néonatal ?", opts: ["A. Le lymphoedème.", "B. La petite taille.", "C. L'aménorrhée.", "D. L'hypotrophie.", "E. Le pterygium colli."], ans: ["A","B","E"] },
-          { q: "Dans le syndrome de Turner, quels sont les signes cliniques constituants la triade diagnostique ?", opts: ["A. Le lymphoedème.", "B. L'aménorrhée primaire.", "C. La petite taille.", "D. Le ptérigium coli.", "E. Le retard mental."], ans: ["B","C","D"] },
-          { q: "Parmi les formules chromosomiques ci-dessous, lesquelles correspondent à un syndrome de Turner ?", opts: ["A. 46Xdel(Xp).", "B. 45X0.", "C. 45X/46XX.", "D. 46Xr(X).", "E. 47XXX/46XX."], ans: ["A","B","C","D"] },
-          { q: "Dans le syndrome de Turner, quelle est la formule chromosomique nécessitant une gonadectomie ?", opts: ["A. 46Xdel(Xp).", "B. 46Xdel(Xq).", "C. 45X/46XX/47XXX.", "D. 45X/46XY.", "E. 46Xi(Xq)."], ans: ["D"] },
-          { q: "A propos du syndrome de Turner en période néonatale, quelles sont les propositions JUSTES ?", opts: ["A. L'apparition du syndrome de Turner en période néonatale est liée à un âge paternel avancé.", "B. Le syndrome de Turner en période néonatale est caractérisé par le syndrome de Bonnevie-Ullrich.", "C. Le chromosome X perdu est le plus souvent d'origine maternelle.", "D. Le chromosome X perdu est le plus souvent d'origine paternelle.", "E. La mise en évidence d'une formule 45X/46XY nécessite une gonadectomie."], ans: ["B","E"] },
-          { q: "Toutes ces anomalies sont observées dans le syndrome de Turner néonatal SAUF une, laquelle ?", opts: ["A. Lymphoedème.", "B. Petite taille.", "C. Hypotonie.", "D. Hypotrophie.", "E. Pterygium colli."], ans: ["C"] },
-          { q: "Dans le syndrome de Turner néonatal, quelle anomalie viscérale faut-il rechercher en premier ?", opts: ["A. Rein en fer à cheval.", "B. Rein pelvien.", "C. Hypoplasie des ovaires.", "D. Diastasis radio-lunaire.", "E. Coarctation de l'aorte."], ans: ["E"] },
-          { q: "Dans le syndrome de Turner, quels sont les signes cliniques constituants la triade diagnostique ?", opts: ["A. Aménorrhée primaire.", "B. Petite taille.", "C. Ptérigium coli.", "D. Retard mental.", "E. Epicanthus."], ans: ["A","B","C"] },
-          { q: "Dans le syndrome de Turner, quelle est la formule chromosomique qui s'accompagne de retard mental ?", opts: ["A. 46Xdel(Xp).", "B. 46XI(Xq).", "C. 46Xdel(Xq).", "D. 45X/46XX/47XXX.", "E. 46X r(X)."], ans: ["E"] },
-          { q: "L'inactivation de l'X est un phénomène :", opts: ["A. Pathologique.", "B. Physiologique.", "C. Aléatoire.", "D. Embryologique.", "E. Non transmissible."], ans: ["B","D","E"] },
-          { q: "Dans le syndrome de Turner, quelle est la formule chromosomique qui s'accompagne de retard mental ?", opts: ["A. 46.Xdel(Xp).", "B. 46Xr(X).", "C. 45X/46.XX/47.XXX.", "D. 45.X/46.XY.", "E. 46.X.i(Xq)."], ans: ["B"] },
-          { q: "A propos du syndrome de Turner, quelles sont les propositions justes ?", opts: ["A. C'est la seule monosomie complète viable.", "B. Sa survenue n'est pas influencée par l'âge maternel ou paternel.", "C. La fertilité est normale.", "D. Le phénotype est masculin avec dysmorphie et retard mental.", "E. La formule chromosomique la plus fréquente est 46Xdel(Xp)."], ans: ["A","B"] },
-          { q: "Dans le syndrome de Turner, quelle est la formule chromosomique nécessitant une gonadectomie ?", opts: ["A. 46X.del(Xp).", "B. 46.X.del(Xq).", "C. 45X/46.XX/47XXX.", "D. 45X/46.XY.", "E. 46X.i(Xq)."], ans: ["D"] },
       ]},
       { id: "had", label: "Hérédité AD", accent: "#c2410c", light: "#fff7ed", border: "#fb923c", questions: [
           { q: "Dans les maladies à transmission autosomique dominante :", opts: ["A. La pénétrance est incomplète.", "B. L'expressivité est variable.", "C. Les néomutations sont fréquentes.", "D. L'anticipation est absente.", "E. La pléiotropie est présente."], ans: ["A","B","C","E"] },
@@ -766,6 +776,13 @@
       const [activeTab, setActiveTab] = useState("t21");
       const [selections, setSelections] = useState({});
       const [checked, setChecked] = useState({});
+      const scrollRef = useRef(null);
+
+      const scroll = (offset) => {
+        if (scrollRef.current) {
+          scrollRef.current.scrollBy({ left: offset, behavior: "smooth" });
+        }
+      };
 
       const topic = TOPICS.find(t => t.id === activeTab);
       const { accent, light, border } = topic;
@@ -809,22 +826,33 @@
             <div style={{ fontSize: 13, fontWeight: 700, letterSpacing: "0.08em", color: "#64748b", textTransform: "uppercase", marginBottom: 12 }}>
               🧬 Génétique Médicale — QCM Interactif
             </div>
-            <div className="tabs-container" style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-              {TOPICS.map(t => (
-                <button key={t.id} onClick={() => setActiveTab(t.id)}
-                  style={{ 
-                    padding: "8px 18px", 
-                    borderRadius: 24, 
-                    fontSize: 14, 
-                    fontWeight: 600, 
-                    cursor: "pointer", 
-                    border: `1.5px solid ${activeTab === t.id ? 'transparent' : t.border}`,
-                    background: activeTab === t.id ? t.accent : "#ffffff",
-                    color: activeTab === t.id ? "#fff" : t.accent, 
-                  }}>
-                  {t.label}
-                </button>
-              ))}
+
+            <div className="tabs-wrapper">
+              <button className="scroll-btn" onClick={() => scroll(-200)}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+              </button>
+
+              <div className="tabs-container" ref={scrollRef}>
+                {TOPICS.map(t => (
+                  <button key={t.id} onClick={() => setActiveTab(t.id)}
+                    style={{ 
+                      padding: "8px 18px", 
+                      borderRadius: "24px", 
+                      fontSize: "14px", 
+                      fontWeight: 600, 
+                      cursor: "pointer", 
+                      border: `1.5px solid ${activeTab === t.id ? 'transparent' : t.border}`,
+                      background: activeTab === t.id ? t.accent : "#ffffff",
+                      color: activeTab === t.id ? "#fff" : t.accent, 
+                    }}>
+                    {t.label}
+                  </button>
+                ))}
+              </div>
+
+              <button className="scroll-btn" onClick={() => scroll(200)}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+              </button>
             </div>
           </div>
 
